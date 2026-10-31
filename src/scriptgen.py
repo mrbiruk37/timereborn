@@ -33,12 +33,12 @@ def get_groq_client() -> groq.Groq:
 
 
 def get_default_model() -> str:
-    """Get Groq model from environment or settings."""
+    """Get Groq model from environment or settings with safe fallbacks."""
     env_model = os.getenv("GROQ_MODEL")
     if env_model:
         return env_model
     settings = load_settings()
-    return settings.get("llm", {}).get("model", "llama-3.3-70b-versatile")
+    return settings.get("llm", {}).get("model", "openai/gpt-oss-120b")
 
 
 def generate_short_script(topic: str, context: Optional[str] = None) -> ShortScriptResponse:

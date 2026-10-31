@@ -168,3 +168,4 @@ def delete_video(video_id: str) -> None:
     youtube = get_authenticated_service()
     logger.info(f"Deleting video {video_id}...")
     youtube.videos().delete(id=video_id).execute()
+

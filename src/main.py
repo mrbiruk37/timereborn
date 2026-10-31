@@ -19,8 +19,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger("timereborn")
 
+from src.analytics import collect_milestone_analytics
 from src.captions import create_subtitles
 from src.footage import prepare_scene_footage
+from src.ideas import select_next_idea
+from src.learn import run_learning_loop, send_daily_summary
 from src.render import render_video
 from src.scriptgen import generate_short_script
 from src.state import add_post, load_settings
@@ -190,6 +193,33 @@ def cmd_make_short(
         raise
 
 
+def cmd_post_slot(slot: str = "auto") -> Path:
+    """Execute scheduled posting slot: pick idea, generate video, upload, and notify."""
+    logger.info(f"=== Executing Scheduled Slot: '{slot}' ===")
+    try:
+        idea = select_next_idea()
+        logger.info(f"Selected Idea for slot '{slot}': '{idea.get('title_seed')}' (Source: {idea.get('source')})")
+        topic = idea.get("topic", idea.get("title_seed", "Stoic Wisdom"))
+        return cmd_make_short(topic=topic, upload=True, slot=slot)
+    except Exception as e:
+        logger.exception(f"Slot {slot} failed: {e}")
+        send_alert(error_summary=f"Failed slot {slot}: {e}")
+        raise
+
+
+def cmd_analytics() -> None:
+    """Execute daily analytics collection and learning loop."""
+    logger.info("=== Executing Analytics & Learning Loop ===")
+    try:
+        collect_milestone_analytics()
+        run_learning_loop()
+        send_daily_summary()
+    except Exception as e:
+        logger.exception(f"Analytics run failed: {e}")
+        send_alert(error_summary=f"Analytics failed: {e}")
+        raise
+
+
 def main():
     parser = argparse.ArgumentParser(description="Timereborn autonomous content agent CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -230,9 +260,9 @@ def main():
     elif args.command == "make-long":
         logger.info("make-long will be implemented in Phase 6.")
     elif args.command == "post-slot":
-        logger.info("post-slot will be implemented in Phase 3.")
+        cmd_post_slot(slot=args.slot)
     elif args.command == "analytics":
-        logger.info("analytics will be implemented in Phase 4.")
+        cmd_analytics()
     elif args.command == "comments":
         logger.info("comments will be implemented in Phase 5.")
     elif args.command == "poll-telegram":

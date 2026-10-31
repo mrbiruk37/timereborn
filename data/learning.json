@@ -1,19 +1,27 @@
 {
-  "last_updated": null,
+  "last_updated": "2026-10-31T17:59:14Z",
   "top_videos": [],
   "bottom_videos": [],
   "winning_hooks": [],
   "losing_hooks": [],
   "best_lengths_sec": {
-    "short": [30, 45],
-    "long": [300, 480]
+    "short": [
+      25,
+      45
+    ],
+    "long": [
+      300,
+      480
+    ]
   },
-  "best_posting_times_utc": ["13:00", "17:00", "22:00"],
+  "best_posting_times_utc": [
+    "13:00",
+    "17:00",
+    "22:00"
+  ],
   "requested_topics": [],
-  "audience_sentiment": "neutral",
   "key_insights": [
-    "Prioritize high-curiosity opening hooks in the first 2 seconds.",
-    "Deliver immediate value and actionable philosophical wisdom."
+    "Use curiosity gap questions in the first 2 seconds.",
+    "Focus on actionable stoic wisdom and emotional clarity."
   ]
 }
-

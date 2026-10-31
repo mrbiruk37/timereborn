@@ -165,3 +165,4 @@ def send_alert(error_summary: str, details: Optional[str] = None) -> None:
         send_message(text=text)
     except Exception as e:
         logger.error(f"Could not send Telegram alert: {e}")
+

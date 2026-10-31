@@ -73,3 +73,4 @@ def test_delete_video_mocked(mock_get_service):
 
     delete_video("vid_123")
     mock_service.videos().delete.assert_called_once_with(id="vid_123")
+

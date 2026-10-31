@@ -86,3 +86,4 @@ def test_send_alert(mock_send_msg):
     msg_text = mock_send_msg.call_args[1]["text"]
     assert "TIMEREBORN FAILURE ALERT" in msg_text
     assert "FFmpeg error" in msg_text
+
