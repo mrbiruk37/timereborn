@@ -80,16 +80,24 @@ def main():
     print("\nStarting local authentication server on http://localhost:8080...")
     print("A browser window will open. Sign in to the YouTube channel you want Timereborn to manage.\n")
 
-    try:
-        # prompt="consent" forces Google to return a refresh_token on every run
-        creds = flow.run_local_server(
-            port=8080,
-            prompt="consent",
-            access_type="offline",
-        )
-    except Exception as e:
-        print(f"\nOAuth authorization failed: {e}")
-        sys.exit(1)
+    ports_to_try = [8080, 8088, 8090, 0]
+    creds = None
+    for p in ports_to_try:
+        try:
+            port_label = f"http://localhost:{p}" if p != 0 else "a dynamic local port"
+            print(f"\nAttempting authentication server on {port_label}...")
+            creds = flow.run_local_server(
+                port=p,
+                prompt="consent",
+                access_type="offline",
+            )
+            break
+        except OSError as e:
+            if "10048" in str(e) or "address already in use" in str(e).lower():
+                print(f"Port {p} was in use, trying next port...")
+                continue
+            else:
+                raise
 
     if not creds.refresh_token:
         print("\n[WARNING] No refresh token received.")
