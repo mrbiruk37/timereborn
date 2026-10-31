@@ -48,11 +48,13 @@ def test_send_daily_summary(mock_posts, mock_learning, mock_send_msg):
         "best_lengths_sec": {"short": [25, 40]},
         "key_insights": ["Keep intros under 2 seconds"],
     }
-    mock_posts.return_value = [{"title": "Post 1"}]
+    mock_posts.return_value = [
+        {"title": "Post 1", "metrics": {"24h": {"views": 120, "likes": 15}}}
+    ]
 
     send_daily_summary()
     assert mock_send_msg.called
     text = mock_send_msg.call_args[1]["text"]
-    assert "Timereborn Daily Report" in text
-    assert "Winning Video" in text
+    assert "Daily Performance Summary" in text
+    assert "Post 1 (120 views)" in text
 

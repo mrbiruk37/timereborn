@@ -1,4 +1,8 @@
-"""Performance analytics collector for 24h and 72h milestones."""
+"""Performance analytics collector for 24h and 72h metrics.
+
+Strictly records real API numbers into data/posts.json and data/stats.json.
+Contains zero milestone notifications or celebratory messages.
+"""
 
 import datetime
 import logging
@@ -7,35 +11,9 @@ from typing import Any, Dict, List, Optional
 from googleapiclient.errors import HttpError
 
 from src.state import get_posts, get_stats, save_posts, save_stats
-from src.telegram import send_message
 from src.youtube import get_authenticated_service
 
 logger = logging.getLogger("timereborn.analytics")
-
-VIEW_MILESTONES = [100, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 500000, 1000000]
-
-
-def check_and_notify_view_milestones(post: Dict[str, Any], current_views: int) -> None:
-    """Check if video crossed view milestones (100, 500, 1000, etc.) and alert Telegram."""
-    metrics = post.setdefault("metrics", {})
-    notified = metrics.setdefault("notified_milestones", [])
-    title = post.get("title", "Untitled Video")
-    yt_url = post.get("youtube_url", "")
-
-    for m in VIEW_MILESTONES:
-        if current_views >= m and m not in notified:
-            notified.append(m)
-            logger.info(f"Video '{title}' reached milestone: {m} views!")
-            msg = (
-                f"🎉 <b>VIEW MILESTONE REACHED!</b>\n\n"
-                f"🔥 <b>\"{title}\"</b> just crossed <b>{m:,} views</b>!\n\n"
-                f"📊 <b>Current Views:</b> {current_views:,}\n"
-                f"🔗 <a href=\"{yt_url}\">Watch on YouTube</a>"
-            )
-            try:
-                send_message(msg)
-            except Exception as e:
-                logger.warning(f"Could not send milestone alert to Telegram: {e}")
 
 
 def parse_iso_datetime(dt_str: str) -> Optional[datetime.datetime]:
@@ -78,12 +56,12 @@ def fetch_video_metrics(video_id: str) -> Optional[Dict[str, Any]]:
 
 
 def collect_milestone_analytics() -> Dict[str, Any]:
-    """Scan posts.json, fetch 24h and 72h stats, and update metrics."""
+    """Scan posts.json, fetch 24h and 72h stats, and update metrics without milestone alerts."""
     posts = get_posts()
     now = datetime.datetime.now(datetime.timezone.utc)
     updated_count = 0
 
-    logger.info(f"Checking milestone analytics for {len(posts)} recorded posts...")
+    logger.info(f"Checking analytics for {len(posts)} recorded posts...")
 
     for post in posts:
         yt_id = post.get("youtube_id")
@@ -98,27 +76,23 @@ def collect_milestone_analytics() -> Dict[str, Any]:
         age_hours = (now - created_dt).total_seconds() / 3600.0
         metrics = post.setdefault("metrics", {})
 
-        # Check 24h milestone (between 24h and 48h, if not recorded yet)
+        # Check 24h metrics
         if age_hours >= 24 and "24h" not in metrics:
-            logger.info(f"Collecting 24h metrics for '{post.get('title')}' ({yt_id})...")
             m_data = fetch_video_metrics(yt_id)
             if m_data:
                 metrics["24h"] = m_data
-                check_and_notify_view_milestones(post, m_data["views"])
                 updated_count += 1
 
-        # Check 72h milestone (between 72h and 96h, if not recorded yet)
+        # Check 72h metrics
         if age_hours >= 72 and "72h" not in metrics:
-            logger.info(f"Collecting 72h metrics for '{post.get('title')}' ({yt_id})...")
             m_data = fetch_video_metrics(yt_id)
             if m_data:
                 metrics["72h"] = m_data
-                check_and_notify_view_milestones(post, m_data["views"])
                 updated_count += 1
 
     if updated_count > 0:
         save_posts(posts)
-        logger.info(f"Updated milestone metrics for {updated_count} post milestones.")
+        logger.info(f"Updated metrics for {updated_count} posts.")
 
     # Build and update stats snapshot
     stats_snapshot = build_stats_snapshot(posts)
@@ -127,7 +101,7 @@ def collect_milestone_analytics() -> Dict[str, Any]:
 
 
 def build_stats_snapshot(posts: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """Generate overall 7-day performance snapshot for Telegram /stats command."""
+    """Generate overall 7-day performance snapshot from real API records."""
     now = datetime.datetime.now(datetime.timezone.utc)
     seven_days_ago = now - datetime.timedelta(days=7)
 
@@ -164,4 +138,3 @@ def build_stats_snapshot(posts: List[Dict[str, Any]]) -> Dict[str, Any]:
             "recent_posts": recent_posts[-5:],
         },
     }
-

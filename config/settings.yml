@@ -1,8 +1,29 @@
 # Timereborn Configuration
 
-mode: "approve" # "approve" or "auto"
 niche: "TimeReborn: Iconic historical figures and legends reborn in the modern world, reacting to current news, artificial intelligence, futuristic breakthroughs, and modern human dilemmas."
 language: "en"
+
+reference_dir: "video_idea"
+
+style_variants:
+  - id: "cinematic_stock_footage"
+    name: "Cinematic Stock Footage"
+    description: "High-contrast dynamic 4k B-roll with Ken Burns zoom and atmospheric lighting"
+  - id: "minimal_text_on_screen"
+    name: "Minimal Text on Screen"
+    description: "Striking moody backgrounds with bold single-word or short-phrase typographic pops"
+  - id: "kinetic_typography"
+    name: "Kinetic Typography"
+    description: "Fast-moving animated text sequences driving the core message with rhythmic visual cuts"
+  - id: "image_zoom_storytelling"
+    name: "Image Zoom Storytelling"
+    description: "Dramatic slow push-in and pull-back pans across iconic artworks, historical photos, and statues"
+  - id: "animated_diagrams"
+    name: "Animated Diagrams / Whiteboard"
+    description: "Schematic blueprints, timelines, and minimalist graphic motion"
+  - id: "split_screen_comparison"
+    name: "Split-Screen Comparison"
+    description: "Direct side-by-side visual contrast between ancient reality and futuristic modern breakthroughs"
 
 voice:
   name: "en-US-ChristopherNeural" # deep, dramatic, cinematic narration voice
@@ -16,16 +37,27 @@ schedule:
       type: "short"
     - id: "slot_2"
       time_utc: "17:00"
-      type: "long" # Phase 6: 16:9 long horizontal video
+      type: "short"
     - id: "slot_3"
       time_utc: "22:00"
       type: "short"
 
 limits:
-  shorts_min_duration_sec: 25
-  shorts_max_duration_sec: 45
+  shorts_min_duration_sec: 12
+  shorts_max_duration_sec: 60
   max_comments_replied_per_day: 15
-  daily_youtube_quota_limit: 9500 # buffer under 10,000 quota
+  daily_youtube_quota_limit: 9500
+
+quality_gate:
+  min_duration_sec: 12
+  max_duration_sec: 60
+  max_ngram_similarity: 0.15
+  require_audio: true
+  require_captions: true
+
+vision:
+  provider: "gemini"
+  model: "gemini-1.5-flash"
 
 video:
   shorts:
@@ -39,10 +71,9 @@ video:
       outline_color: "&H00000000"
       back_color: "&H80000000"
       bold: true
-      alignment: 10 # centered
+      alignment: 10
       margin_v: 280
 
 llm:
   model: "openai/gpt-oss-120b"
   temperature: 0.7
-

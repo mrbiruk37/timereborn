@@ -1,15 +1,16 @@
-"""Unit tests for Telegram Bot API client and approval messaging."""
+"""Unit tests for Telegram Bot API client with strict mock guards."""
 
-import json
-from unittest.mock import MagicMock, patch
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 import pytest
+
 from src.telegram import (
+    format_real_post_message,
     get_telegram_config,
-    send_message,
-    send_video,
-    send_approval_request,
     send_alert,
+    send_message,
+    send_post_notification,
+    send_video,
 )
 
 
@@ -18,6 +19,31 @@ def test_missing_credentials(monkeypatch):
     monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
     with pytest.raises(ValueError, match="Missing Telegram credentials"):
         get_telegram_config()
+
+
+def test_format_real_post_message_valid():
+    record = {
+        "title": "When Caesar Meets AI",
+        "youtube_url": "https://youtu.be/test1234",
+        "platform": "YouTube",
+        "reference_file": "1.mp4",
+        "style_variant": "cinematic_stock_footage",
+        "slot_time_utc": "13:00",
+    }
+    msg = format_real_post_message(record)
+    assert "Posted to YouTube" in msg
+    assert "Title: When Caesar Meets AI" in msg
+    assert "Link: https://youtu.be/test1234" in msg
+    assert "Based on: 1.mp4 | Style: cinematic_stock_footage" in msg
+
+
+def test_format_real_post_message_rejects_placeholder():
+    # Must refuse to send messages with placeholder text
+    with pytest.raises(ValueError):
+        format_real_post_message({"title": "<title>", "youtube_url": "https://youtu.be/123"})
+
+    with pytest.raises(ValueError):
+        format_real_post_message({"title": "Test video placeholder", "youtube_url": "https://youtu.be/123"})
 
 
 @patch("src.telegram.requests.post")
@@ -34,6 +60,15 @@ def test_send_message_success(mock_post, monkeypatch):
     assert res["ok"] is True
     assert mock_post.called
     assert "https://api.telegram.org/botmock_token/sendMessage" in mock_post.call_args[0][0]
+
+
+def test_dry_run_never_calls_network(monkeypatch):
+    # Ensure dry_run flag never executes an actual network request
+    with patch("src.telegram.requests.post") as mock_post:
+        res = send_message("Test message", dry_run=True)
+        assert res["ok"] is True
+        assert res["dry_run"] is True
+        mock_post.assert_not_called()
 
 
 @patch("src.telegram.requests.post")
@@ -54,36 +89,10 @@ def test_send_video_success(mock_post, tmp_path: Path, monkeypatch):
     assert "https://api.telegram.org/botmock_token/sendVideo" in mock_post.call_args[0][0]
 
 
-@patch("src.telegram.send_video")
-@patch("src.telegram.send_message")
-def test_send_approval_request(mock_send_msg, mock_send_vid, tmp_path: Path):
-    dummy_video = tmp_path / "test.mp4"
-    dummy_video.write_bytes(b"data")
-
-    send_approval_request(
-        video_id="yt_abc123",
-        title="Marcus Aurelius Secret",
-        youtube_url="https://youtu.be/yt_abc123",
-        video_path=dummy_video,
-        caption="Sample TikTok Caption #Shorts",
-        slot="slot_1",
-    )
-
-    assert mock_send_vid.called
-    assert mock_send_msg.called
-
-    # Verify inline keyboard has Approve and Reject callback buttons
-    call_kwargs = mock_send_msg.call_args[1]
-    keyboard = call_kwargs["reply_markup"]["inline_keyboard"]
-    assert keyboard[0][0]["callback_data"] == "approve:yt_abc123"
-    assert keyboard[0][1]["callback_data"] == "reject:yt_abc123"
-
-
 @patch("src.telegram.send_message")
 def test_send_alert(mock_send_msg):
-    send_alert("FFmpeg error", details="Code 1")
+    send_alert(error_summary="FFmpeg render error", details="Exit code 1")
     assert mock_send_msg.called
-    msg_text = mock_send_msg.call_args[1]["text"]
-    assert "TIMEREBORN FAILURE ALERT" in msg_text
-    assert "FFmpeg error" in msg_text
-
+    msg = mock_send_msg.call_args[1]["text"]
+    assert "Pipeline error: FFmpeg render error" in msg
+    assert "Exit code 1" in msg

@@ -1,159 +1,115 @@
-# Timereborn ⏳✨
+# Timereborn ⏳
 
-**Timereborn** is a complete, autonomous, $0-budget AI content creator designed to run 24/7 on GitHub Actions with your PC turned off. It researches viral concepts from reference channels, writes 100% original vertical Shorts and 16:9 horizontal documentary videos, synthesizes natural neural voices, generates word-level captions, fetches free licensed stock footage, uploads to YouTube, delivers TikTok-ready videos to Telegram, interacts with viewers via auto-replies, and learns from audience analytics to self-improve over time.
+**Timereborn** is an autonomous, $0-budget AI content engine running on GitHub Actions with your PC turned off. It studies reference videos from `video_idea/`, analyzes their structure, and recreates 100% original vertical videos matching their pacing and hook while rotating across distinct visual styles. Videos are vetted by an automated Quality Gate and published directly to YouTube and dispatched to Telegram with real metrics and plain text reports.
 
 ---
 
 ## 🔒 Hard Rules & Ethics
 
-1. **Originality Guarantee:** Reference channels are studied strictly for titles, hooks, stats, and transcripts to identify winning themes. **Zero** creator audio, video, or script text is ever reused. All scripts are written fresh by the LLM.
-2. **Official APIs Only:** Uses official YouTube Data API v3, YouTube Analytics API, Telegram Bot API, Pixabay API, and Groq API. No browser automation or fragile web scraping.
-3. **TikTok Delivery:** Sends the rendered vertical MP4 with caption and hashtags to your Telegram for easy 1-click mobile posting (no unofficial TikTok APIs).
-4. **Zero Secrets in Git:** Secrets are read strictly from environment variables (local `.env` in development, GitHub Repository Secrets in CI).
-5. **AI Content Disclosure:** Transparently discloses AI generation in YouTube metadata and description.
-6. **Free-Tier Protection:** Respects YouTube's 10,000 daily quota units, caches stock footage, and retries with exponential backoff.
+1. **Originality Guarantee:** Reference videos in `video_idea/` are studied strictly for structural pacing, beats, and hooks. **Zero** footage, audio, voice, or text from references is reused. All scripts are written fresh by the LLM and vetted by an n-gram similarity check before rendering.
+2. **Real Data Only:** No test, demo, sample, mock, or placeholder messages are ever sent to Telegram. Milestone celebrations and emojis are omitted. Numbers (views, likes, comments) originate strictly from real API responses saved in `stats.json`.
+3. **Automated Quality Gate:** Every video passes automated checks (duration bounds, audio track presence, subtitle dialogues, no black frames, script length matching pacing, and LLM self-review) before posting.
+4. **Public Posting:** Videos are published directly as Public on YouTube, and the TikTok-ready MP4 is delivered to Telegram.
+5. **Zero Secrets in Git:** All API keys and tokens are stored in environment variables (local `.env` in development, GitHub Secrets in CI).
 
 ---
 
-## 🛠 Tech Stack
+## 📁 Adding Reference Videos (`video_idea/`)
 
-- **Runtime:** Python 3.11+
-- **LLM Engine:** Groq API (`openai/gpt-oss-120b` or `qwen/qwen3.8-27b`) with Pydantic JSON validation
-- **Voiceover:** `edge-tts` (Microsoft neural voices, 100% free, no key required)
-- **Subtitles:** `faster-whisper` (word-level timestamps to `.ass` subtitles with proportional fallback)
-- **Footage:** Pixabay API (HD landscape/vertical video clips & Ken Burns pan/zoom images)
-- **Video Rendering:** FFmpeg (1080x1920 9:16 Shorts & 1920x1080 16:9 long documentaries)
-- **Automation:** GitHub Actions (scheduled UTC slots + daily keepalive commit)
+The repository includes a `video_idea/` folder containing reference videos (`.mp4`, `.mov`, `.webm`):
 
----
-
-## 🔑 Required Secrets & Environment Variables
-
-| Variable | Description | Where to Obtain |
-|---|---|---|
-| `GROQ_API_KEY` | Groq Cloud API Key | [console.groq.com](https://console.groq.com) |
-| `GROQ_MODEL` | LLM Model (Default: `openai/gpt-oss-120b`) | Groq Console |
-| `PIXABAY_API_KEY` | Pixabay API Key for free stock video/images | [pixabay.com/api/docs](https://pixabay.com/api/docs/) |
-| `TELEGRAM_BOT_TOKEN` | Telegram Bot Token | BotFather on Telegram |
-| `TELEGRAM_CHAT_ID` | Your Telegram Chat ID for alerts and videos | `@userinfobot` on Telegram |
-| `YT_CLIENT_ID` | Google OAuth 2.0 Client ID | Google Cloud Console |
-| `YT_CLIENT_SECRET` | Google OAuth 2.0 Client Secret | Google Cloud Console |
-| `YT_REFRESH_TOKEN` | YouTube OAuth Refresh Token | Generated via `scripts/get_youtube_token.py` |
+1. Place your reference video into the `video_idea/` folder.
+2. Ensure each file is under **50 MB** (GitHub limit is 100 MB).
+3. Commit and push:
+   ```bash
+   git add video_idea/
+   git commit -m "add reference video"
+   git push origin main
+   ```
+4. On the next scheduled run, the engine computes the SHA-256 hash, extracts technical and audio metrics, reverse-engineers the beats and hook, and caches the result in `data/reference_analysis.json`. Files with matching hashes are never re-analyzed.
 
 ---
 
-## 📁 Repository Structure
+## 🎨 Recreate Engine & Visual Styles
 
-```
-timereborn/
-├── .github/workflows/
-│   ├── post.yml              # Scheduled video slots (13:00, 17:00, 22:00 UTC)
-│   ├── analytics.yml         # Daily stats collection, comments, & learning loop (06:00 UTC)
-│   └── telegram_poll.yml     # Telegram approval polling & bot commands (every 15 min)
-├── config/
-│   ├── settings.yml          # Niche, slots, voice, limits, mode (approve/auto)
-│   └── sources.yml           # Reference YouTube channels to study for ideas
-├── data/
-│   ├── ideas.json            # Backlog of queued and brainstormed video ideas
-│   ├── posts.json            # History of rendered and published videos
-│   ├── stats.json            # Analytics snapshots (views, likes, retention)
-│   ├── comments.json         # Viewer comments, classification, and drafted replies
-│   └── learning.json         # Self-improving insights (winning hooks, topics, lengths)
-├── src/
-│   ├── state.py              # Safe atomic state management
-│   ├── scriptgen.py          # Groq LLM script generation with JSON validation (Short & Long)
-│   ├── voice.py              # edge-tts voiceover generation
-│   ├── captions.py           # faster-whisper word-level subtitle generation (.ass)
-│   ├── footage.py            # Pixabay provider, cache, and Ken Burns generator
-│   ├── render.py             # FFmpeg video compositor (9:16 Shorts / 16:9 long)
-│   ├── youtube.py            # Official YouTube v3 resumable upload & privacy control
-│   ├── telegram.py           # Telegram bot notifications & TikTok video delivery
-│   ├── telegram_poll.py      # Interactive Telegram buttons & bot commands
-│   ├── research.py           # Reference channels research via Data API
-│   ├── ideas.py              # Ideas queue, deduplication, & 70/30 selection
-│   ├── analytics.py          # Metrics collector (24h/72h milestones)
-│   ├── comments.py           # Sentiment classification & auto-replies (max 15/day)
-│   ├── learn.py              # Self-learning feedback loop & daily Telegram summary
-│   └── main.py               # Unified CLI dispatcher
-├── scripts/
-│   └── get_youtube_token.py  # Local one-time OAuth token generator
-├── tests/                    # 42 Pytest unit tests across all modules
-├── requirements.txt
-├── .env.example
-├── .gitignore
-└── README.md
+Each run selects the next reference video in a round-robin rotation and pairs it with an unused visual style from `config/settings.yml`:
+
+- `cinematic_stock_footage`: High-contrast dynamic B-roll with pan/zoom.
+- `minimal_text_on_screen`: Moody backgrounds with typographic highlights.
+- `kinetic_typography`: Fast-moving rhythmic animated text sequences.
+- `image_zoom_storytelling`: Push-in/pull-back pans across statues and artworks.
+- `animated_diagrams`: Minimalist schematics and blueprint motion.
+- `split_screen_comparison`: Side-by-side contrast between ancient reality and modern tech.
+
+Style selection incorporates performance insights from `data/learning.json` with a 30% exploration rate for experimental styles.
+
+---
+
+## 🛡️ Automated Quality Gate
+
+Before any video is published, `src/quality_gate.py` runs automated verification:
+
+1. **Duration Bounds:** Confirms duration is within `min_duration_sec` and `max_duration_sec` from `settings.yml`.
+2. **Audio Track:** Probes the rendered file to verify audio track existence and volume.
+3. **Captions:** Ensures the generated `.ass` file contains valid dialogue entries.
+4. **Black Segments:** Scans the stream for continuous black frames via FFmpeg `blackdetect`.
+5. **Script Similarity:** Verifies n-gram similarity against the reference transcript is below `0.15`.
+6. **LLM Editorial Review:** Checks for strong opening hooks, detects placeholder text, and flags factual anomalies.
+
+If a video fails the gate, the engine regenerates it once. If it fails a second time, the slot is skipped and a short 1-line error message is sent to Telegram.
+
+---
+
+## 📱 Telegram Commands & Notifications
+
+Owner Telegram commands:
+- `/pause` – Suspends scheduled posting slots.
+- `/resume` – Resumes scheduled posting slots.
+- `/stats` – Reports real 7-day stats (videos, views, likes, comments) from `stats.json`.
+- `/idea <concept>` – Adds a user idea to the backlog.
+
+Post notification format:
+```text
+Posted to YouTube
+Title: <title>
+Link: <url>
+Slot: <slot>
+Based on: <reference_file> | Style: <style_variant>
 ```
 
 ---
 
-## 🤖 Telegram Bot Commands & Approval Flow
+## 🧪 Local Testing & Dry-Run Mode
 
-The Telegram bot handles both interactive approval buttons and administrative commands via `telegram_poll.yml`:
+You can test any command locally without publishing or sending real Telegram messages using `--dry-run`:
 
-| Command / Action | Description |
-|---|---|
-| `✅ Approve (Publish)` | Changes YouTube video privacy from **Private** to **Public**. |
-| `❌ Reject (Delete)` | Deletes the private upload from YouTube and cancels publication. |
-| `✅ Send Reply` | Approves and posts a drafted comment reply on YouTube. |
-| `❌ Dismiss` | Dismisses a drafted comment reply. |
-| `/pause` | Temporarily suspends scheduled posting slots. |
-| `/resume` | Resumes automated posting slots. |
-| `/stats` | Sends a summary of the channel's performance over the last 7 days. |
-| `/idea <text or link>` | Submits a new concept or inspiration link to the ideas backlog. |
-| `/mode approve` | Sets upload mode to Private + Telegram interactive approval. |
-| `/mode auto` | Sets upload mode to direct Public release. |
+```bash
+# Test scheduled slot recreation in dry-run mode
+python -m src.main post-slot --slot slot_1 --dry-run
 
----
+# Test generating a standalone short in dry-run mode
+python -m src.main make-short --topic "Nikola Tesla reborn" --dry-run
 
-## 🎬 CLI Reference
-
-### 1. Generate Vertical Short (Phase 1 & 2)
-```powershell
-# Local render only
-python -m src.main make-short --topic "The Stoic Secret to Conquering Overthinking"
-
-# Render + YouTube Upload + Telegram Delivery
-python -m src.main make-short --topic "Marcus Aurelius Morning Habit" --upload
-```
-
-### 2. Generate 16:9 Long Documentary (Phase 6)
-```powershell
-# Local 16:9 widescreen render (chapters + horizontal footage)
-python -m src.main make-long --topic "The Rise of Marcus Aurelius"
-
-# Render + YouTube Upload
-python -m src.main make-long --topic "The Rise of Marcus Aurelius" --upload
-```
-
-### 3. Execute Scheduled Slot (Phase 3 & 4)
-```powershell
-# Slot 1 (13:00 UTC) = Short
-python -m src.main post-slot --slot slot_1
-
-# Slot 2 (17:00 UTC) = Long Documentary
-python -m src.main post-slot --slot slot_2
-```
-
-### 4. Run Daily Analytics & Self-Learning (Phase 4)
-```powershell
-python -m src.main analytics
-```
-
-### 5. Process Viewer Comments & Auto-Replies (Phase 5)
-```powershell
-python -m src.main comments
-```
-
-### 6. Poll Telegram Callbacks & Commands (Phase 5)
-```powershell
-python -m src.main poll-telegram
+# Run full pytest test suite (all tests mock Telegram network calls)
+python -m pytest
 ```
 
 ---
 
-## 🧪 Running the Complete Test Suite
+## ⚙️ Configuration (`config/settings.yml`)
 
-Run all 42 unit tests with pytest:
-```powershell
-python -m pytest tests/
+```yaml
+niche: "TimeReborn: Iconic historical figures reborn in the modern world"
+reference_dir: "video_idea"
+
+quality_gate:
+  min_duration_sec: 12
+  max_duration_sec: 60
+  max_ngram_similarity: 0.15
+  require_audio: true
+  require_captions: true
+
+vision:
+  provider: "gemini"
+  model: "gemini-1.5-flash"
 ```

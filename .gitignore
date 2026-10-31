@@ -39,6 +39,10 @@ output/
 *.ass
 .cache/
 
+# Reference videos for GitHub Actions (committed, keep <50MB)
+!video_idea/
+!video_idea/**
+
 # IDE & OS
 .vscode/
 .idea/

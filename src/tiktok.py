@@ -65,6 +65,7 @@ def post_to_tiktok(
         kwargs: Dict[str, Any] = {
             "filename": str(video_path),
             "description": caption,
+            "browser": "chrome",
             "headless": True,
         }
         if session_id:
@@ -88,3 +89,4 @@ def post_to_tiktok(
             "platform": "tiktok",
             "error": str(e),
         }
+

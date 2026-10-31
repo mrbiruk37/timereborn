@@ -133,13 +133,27 @@ def upload_video(
 
     video_id = response.get("id")
     video_url = f"https://youtu.be/{video_id}"
-    logger.info(f"Upload complete! Video ID: {video_id} ({video_url})")
+    actual_privacy = response.get("status", {}).get("privacyStatus", privacy_status)
+    logger.info(f"Upload complete! Video ID: {video_id} ({video_url}) [Privacy: {actual_privacy}]")
+
+    # If YouTube forced upload to private due to unverified API project, notify once
+    if privacy_status == "public" and actual_privacy == "private":
+        try:
+            from src.state import load_settings, save_settings
+            from src.telegram import send_message
+            settings = load_settings()
+            if not settings.get("youtube_audit_notified"):
+                settings["youtube_audit_notified"] = True
+                save_settings(settings)
+                send_message("YouTube API project in testing mode. Uploads restricted to private until audited in Google Cloud Console.")
+        except Exception as e:
+            logger.warning(f"Could not check/send audit notification: {e}")
 
     return {
         "video_id": video_id,
         "video_url": video_url,
         "title": clean_title,
-        "privacy_status": privacy_status,
+        "privacy_status": actual_privacy,
         "uploaded_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
 

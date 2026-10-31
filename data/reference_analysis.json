@@ -1,0 +1,145 @@
+{
+  "1.mp4": {
+    "file_name": "1.mp4",
+    "sha256": "278d18c34700bc6a91ac83ba5589cea58a79cf0ffecc1768569f4482ede7adef",
+    "analyzed_at": "2026-10-31T20:12:34Z",
+    "technical": {
+      "duration": 13.8,
+      "width": 768,
+      "height": 576,
+      "aspect_ratio": "768:576",
+      "fps": 30.0,
+      "scene_cuts_count": 18,
+      "cut_timestamps": [
+        2.6,
+        2.733333,
+        3.066667,
+        3.466667,
+        3.533333,
+        3.6,
+        4.633333,
+        5.633333,
+        6.366667,
+        7.233333,
+        8.0,
+        8.333333,
+        8.866667,
+        9.133333,
+        9.766667,
+        11.166667,
+        11.733333,
+        13.133333
+      ],
+      "average_shot_length_sec": 0.73
+    },
+    "audio": {
+      "transcript": "Outro Music",
+      "word_count": 2,
+      "speaking_pace_wpm": 0,
+      "has_voiceover": false,
+      "has_music_only": true,
+      "audio_mode": "music_only"
+    },
+    "structure": {
+      "topic": "Social Media Outro",
+      "core_idea": "Reinforce brand identity and prompt viewers to stay connected after the main content ends",
+      "target_audience": "Young adults and teens who follow short\u2011form video creators",
+      "hook_type_and_text": "Pattern interrupt \u2013 bold, high\u2011contrast visuals with flashing text \"Outro Music\"",
+      "story_structure": [
+        {
+          "timestamp_sec": 0.0,
+          "beat": "Opening hook with rapid high\u2011contrast cut and title overlay"
+        },
+        {
+          "timestamp_sec": 4.0,
+          "beat": "Escalation of visual energy through fast cuts synced to music"
+        },
+        {
+          "timestamp_sec": 10.0,
+          "beat": "Climax \u2013 peak visual intensity and final branding flash"
+        },
+        {
+          "timestamp_sec": 13.8,
+          "beat": "Looping conclusion \u2013 fade\u2011out with call\u2011to\u2011action overlay"
+        }
+      ],
+      "caption_style": {
+        "position": "center",
+        "size": "large bold",
+        "color": "white with black outline",
+        "highlight_words": true
+      },
+      "pacing": "fast-paced (cut every 1-2s)",
+      "tone": "cinematic and dramatic",
+      "call_to_action": "Tap follow for more videos!",
+      "length_seconds": 13.8,
+      "visual_style": "Dramatic cinematic visuals with high\u2011tension contrasts"
+    }
+  },
+  "video.mp4": {
+    "file_name": "video.mp4",
+    "sha256": "68b57b0b0c25d53472e03719ad09651b6ba5d0408e5072ce2421c35fe615c12b",
+    "analyzed_at": "2026-10-31T20:12:40Z",
+    "technical": {
+      "duration": 16.77,
+      "width": 774,
+      "height": 576,
+      "aspect_ratio": "774:576",
+      "fps": 24.81,
+      "scene_cuts_count": 7,
+      "cut_timestamps": [
+        3.766667,
+        4.566667,
+        7.6,
+        8.666667,
+        10.566667,
+        12.1,
+        13.8
+      ],
+      "average_shot_length_sec": 2.1
+    },
+    "audio": {
+      "transcript": "Hey yo, hey yo, nicer than anybody you say the nicest. Nigga hurt in 30 years and turned righteous. Slide through a full life for niggas knifing. Every since fly, cause you niggas biting.",
+      "word_count": 34,
+      "speaking_pace_wpm": 136,
+      "has_voiceover": true,
+      "has_music_only": false,
+      "audio_mode": "voiceover"
+    },
+    "structure": {
+      "topic": "Street resilience and betrayal",
+      "core_idea": "A gritty reflection on surviving 30 years of hardship, betrayal, and rising above the pain",
+      "target_audience": "Young adults interested in hip\u2011hop culture, street narratives, and motivational rap",
+      "hook_type_and_text": "Pattern interrupt \u2013 opening chant 'Hey yo, hey yo'",
+      "story_structure": [
+        {
+          "timestamp_sec": 0.0,
+          "beat": "Opening hook and pattern interrupt"
+        },
+        {
+          "timestamp_sec": 4.0,
+          "beat": "First revelation of past pain and betrayal"
+        },
+        {
+          "timestamp_sec": 10.0,
+          "beat": "Climactic assertion of resilience and righteousness"
+        },
+        {
+          "timestamp_sec": 14.0,
+          "beat": "Looping conclusion urging viewers to stay real / follow"
+        }
+      ],
+      "caption_style": {
+        "position": "center",
+        "size": "large bold",
+        "color": "white with black outline",
+        "highlight_words": true
+      },
+      "pacing": "fast-paced (cut every 1-2s)",
+      "tone": "cinematic and dramatic",
+      "call_to_action": "What\u2019s your story of overcoming? Drop a comment and follow for more.",
+      "length_seconds": 16.77,
+      "visual_style": "Dramatic cinematic visuals with high\u2011tension contrasts"
+    }
+  }
+}

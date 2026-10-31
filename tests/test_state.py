@@ -37,7 +37,7 @@ def test_settings_loader():
     settings = load_settings()
     assert isinstance(settings, dict)
     assert "niche" in settings
-    assert "mode" in settings
+    assert "style_variants" in settings
 
 
 def test_learning_defaults():

@@ -60,3 +60,4 @@ def test_post_to_tiktok_with_session_success(mock_upload, tmp_path, monkeypatch)
     assert result["status"] == "published"
     assert result["platform"] == "tiktok"
     mock_upload.assert_called_once()
+

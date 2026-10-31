@@ -48,7 +48,7 @@ def test_collect_milestone_analytics(mock_save_stats, mock_save_posts, mock_get_
     mock_get_posts.return_value = [
         {
             "youtube_id": "yt_100",
-            "title": "Video 100",
+            "title": "History Reborn Episode",
             "created_at": created,
             "metrics": {},
         }

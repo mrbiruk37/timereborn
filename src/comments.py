@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 from src.scriptgen import get_default_model, get_groq_client
 from src.state import get_comments, load_settings, save_comments
-from src.telegram import answer_callback_query, send_message
+from src.telegram import send_message
 from src.youtube import get_authenticated_service
 
 logger = logging.getLogger("timereborn.comments")
@@ -173,35 +173,13 @@ def process_comments_pipeline() -> List[Dict[str, Any]]:
             "processed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         }
 
-        # Check if we should reply
+        # In fully automatic mode, post reply directly if under daily cap
         if analysis.draft_reply and replies_today < max_replies_day:
-            if mode == "auto":
-                success = post_youtube_reply(cid, analysis.draft_reply)
-                if success:
-                    record["status"] = "replied"
-                    record["replied_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-                    replies_today += 1
-            else:
-                # Approve mode: Send draft to Telegram with Approve / Dismiss buttons
-                keyboard = {
-                    "inline_keyboard": [
-                        [
-                            {"text": "✅ Send Reply", "callback_data": f"reply_approve:{cid}"},
-                            {"text": "❌ Dismiss", "callback_data": f"reply_reject:{cid}"},
-                        ]
-                    ]
-                }
-                msg_text = (
-                    f"💬 <b>Viewer Question on YouTube</b>\n\n"
-                    f"<b>From:</b> {item.get('author')}\n"
-                    f"<b>Comment:</b> \"{item.get('text')}\"\n\n"
-                    f"<b>Drafted Reply:</b>\n<i>\"{analysis.draft_reply}\"</i>\n\n"
-                    f"Approve to post this reply on YouTube."
-                )
-                try:
-                    send_message(text=msg_text, reply_markup=keyboard)
-                except Exception as e:
-                    logger.warning(f"Could not send comment approval to Telegram: {e}")
+            success = post_youtube_reply(cid, analysis.draft_reply)
+            if success:
+                record["status"] = "replied"
+                record["replied_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+                replies_today += 1
 
         stored_comments.append(record)
         new_comments_found.append(record)

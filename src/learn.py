@@ -138,28 +138,42 @@ def run_learning_loop() -> Dict[str, Any]:
     return learning_data
 
 
-def send_daily_summary() -> None:
-    """Send daily performance and learning summary to Telegram."""
+def send_daily_summary(dry_run: bool = False) -> None:
+    """Send daily performance summary in plain text strictly if real stats exist."""
     learning = get_learning()
     posts = get_posts()
 
-    recent_posts = posts[-3:] if posts else []
-    top_video = learning.get("top_videos", [{}])[0] if learning.get("top_videos") else {}
+    # Only send if real stats exist
+    posts_with_views = []
+    for p in posts:
+        m = p.get("metrics", {}).get("72h") or p.get("metrics", {}).get("24h") or {}
+        v = m.get("views")
+        if v is not None and v > 0:
+            posts_with_views.append((p.get("title", "Untitled"), v))
+
+    if not posts_with_views:
+        logger.info("No real video stats available yet. Daily summary skipped.")
+        return
+
+    posts_with_views.sort(key=lambda x: x[1], reverse=True)
+    best_vid = posts_with_views[0]
+    worst_vid = posts_with_views[-1]
     insights = learning.get("key_insights", [])
 
-    summary_msg = (
-        f"📊 <b>Timereborn Daily Report & Learning Loop</b>\n\n"
-        f"<b>Total Published Videos:</b> {len(posts)}\n"
-        f"<b>Top Performer:</b> {top_video.get('title', 'None yet')}\n"
-        f"<b>Best Length Range:</b> {learning.get('best_lengths_sec', {}).get('short', [25, 45])} seconds\n\n"
-        f"<b>🧠 What the Agent Learned & Will Adjust:</b>\n"
-    )
-
+    lines = [
+        "Daily Performance Summary",
+        f"Total Videos Tracked: {len(posts)}",
+        f"Best Video: {best_vid[0]} ({best_vid[1]} views)",
+        f"Lowest Video: {worst_vid[0]} ({worst_vid[1]} views)",
+        "Planned Adjustments:",
+    ]
     for ins in insights[:3]:
-        summary_msg += f"• {ins}\n"
+        lines.append(f"- {ins}")
+
+    summary_msg = "\n".join(lines)
 
     try:
-        send_message(text=summary_msg)
+        send_message(text=summary_msg, dry_run=dry_run)
         logger.info("Daily summary successfully delivered to Telegram.")
     except Exception as e:
         logger.warning(f"Failed to send daily summary: {e}")

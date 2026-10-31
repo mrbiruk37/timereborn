@@ -55,6 +55,7 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           TIKTOK_SESSION_ID: ${{ secrets.TIKTOK_SESSION_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           SLOT="${{ github.event.inputs.slot || 'auto' }}"
           python -m src.main post-slot --slot "$SLOT"
