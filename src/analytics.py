@@ -7,9 +7,35 @@ from typing import Any, Dict, List, Optional
 from googleapiclient.errors import HttpError
 
 from src.state import get_posts, get_stats, save_posts, save_stats
+from src.telegram import send_message
 from src.youtube import get_authenticated_service
 
 logger = logging.getLogger("timereborn.analytics")
+
+VIEW_MILESTONES = [100, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 500000, 1000000]
+
+
+def check_and_notify_view_milestones(post: Dict[str, Any], current_views: int) -> None:
+    """Check if video crossed view milestones (100, 500, 1000, etc.) and alert Telegram."""
+    metrics = post.setdefault("metrics", {})
+    notified = metrics.setdefault("notified_milestones", [])
+    title = post.get("title", "Untitled Video")
+    yt_url = post.get("youtube_url", "")
+
+    for m in VIEW_MILESTONES:
+        if current_views >= m and m not in notified:
+            notified.append(m)
+            logger.info(f"Video '{title}' reached milestone: {m} views!")
+            msg = (
+                f"🎉 <b>VIEW MILESTONE REACHED!</b>\n\n"
+                f"🔥 <b>\"{title}\"</b> just crossed <b>{m:,} views</b>!\n\n"
+                f"📊 <b>Current Views:</b> {current_views:,}\n"
+                f"🔗 <a href=\"{yt_url}\">Watch on YouTube</a>"
+            )
+            try:
+                send_message(msg)
+            except Exception as e:
+                logger.warning(f"Could not send milestone alert to Telegram: {e}")
 
 
 def parse_iso_datetime(dt_str: str) -> Optional[datetime.datetime]:
@@ -78,6 +104,7 @@ def collect_milestone_analytics() -> Dict[str, Any]:
             m_data = fetch_video_metrics(yt_id)
             if m_data:
                 metrics["24h"] = m_data
+                check_and_notify_view_milestones(post, m_data["views"])
                 updated_count += 1
 
         # Check 72h milestone (between 72h and 96h, if not recorded yet)
@@ -86,6 +113,7 @@ def collect_milestone_analytics() -> Dict[str, Any]:
             m_data = fetch_video_metrics(yt_id)
             if m_data:
                 metrics["72h"] = m_data
+                check_and_notify_view_milestones(post, m_data["views"])
                 updated_count += 1
 
     if updated_count > 0:

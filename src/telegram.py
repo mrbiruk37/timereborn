@@ -169,27 +169,27 @@ def send_approval_request(
     """Send TikTok-ready video and YouTube approval request with inline buttons."""
     tiktok_caption = (
         f"📱 <b>TikTok-Ready Video</b>\n\n"
-        f"<b>Title:</b> {title}\n"
-        f"<b>Caption:</b>\n{caption}"
+        f"{caption}"
     )
     send_video(video_path=video_path, caption=tiktok_caption)
 
     keyboard = {
         "inline_keyboard": [
             [
-                {"text": "✅ Approve (Publish)", "callback_data": f"approve:{video_id}"},
+                {"text": "✅ Approve (Publish Live)", "callback_data": f"approve:{video_id}"},
                 {"text": "❌ Reject (Delete)", "callback_data": f"reject:{video_id}"},
             ]
         ]
     }
 
     report_text = (
-        f"🎬 <b>New Video Uploaded (Private)</b>\n\n"
+        f"🎬 <b>New Video Uploaded to YouTube!</b>\n\n"
         f"<b>Title:</b> {title}\n"
-        f"<b>Slot:</b> <code>{slot}</code>\n"
         f"<b>YouTube Link:</b> <a href=\"{youtube_url}\">{youtube_url}</a>\n"
-        f"<b>Concept/Pattern:</b> {concept_notes or 'Algorithmic curiosity hook'}\n\n"
-        f"Review the private YouTube upload or the attached MP4. Click below to approve for public release or reject."
+        f"<b>Status:</b> 🔒 Private (Awaiting Approval)\n"
+        f"<b>Slot:</b> <code>{slot}</code>\n"
+        f"<b>Pattern:</b> {concept_notes or 'Algorithmic curiosity hook'}\n\n"
+        f"<i>Review the private video on YouTube or the attached TikTok file. Tap Approve to make it public!</i>"
     )
 
     send_message(text=report_text, reply_markup=keyboard)

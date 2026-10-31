@@ -144,8 +144,19 @@ def cmd_make_short(
                 yt_id = yt_res["video_id"]
                 yt_url = yt_res["video_url"]
 
-                # TikTok caption format: hook + summary + hashtags
-                tiktok_caption = f"{script_res.hook}\n\n{' '.join(script_res.hashtags)}"
+                # High-virality TikTok caption template
+                tag_list = script_res.hashtags or ["#Shorts", "#Stoicism", "#History", "#Mindset", "#Philosophy", "#Viral"]
+                if "#Shorts" not in tag_list:
+                    tag_list.insert(0, "#Shorts")
+                viral_hashtags = " ".join(tag_list)
+
+                tiktok_caption = (
+                    f"🔥 {chosen_title}\n\n"
+                    f"\"{script_res.hook}\"\n\n"
+                    f"👇 Follow for daily timeless wisdom & historical perspectives.\n"
+                    f"Drop your thoughts below!\n\n"
+                    f"{viral_hashtags}"
+                )
 
                 # Deliver to Telegram
                 if mode == "approve":
@@ -161,12 +172,14 @@ def cmd_make_short(
                     )
                 else:
                     logger.info("Sending public video announcement and TikTok file to Telegram...")
-                    send_video(video_path=final_output, caption=f"📱 TikTok Version:\n{tiktok_caption}")
+                    send_video(video_path=final_output, caption=tiktok_caption)
                     send_message(
                         f"🚀 <b>Video Published Live!</b>\n\n"
                         f"<b>Title:</b> {chosen_title}\n"
-                        f"<b>Link:</b> <a href=\"{yt_url}\">{yt_url}</a>\n"
-                        f"<b>Slot:</b> <code>{slot}</code>"
+                        f"<b>YouTube Link:</b> <a href=\"{yt_url}\">{yt_url}</a>\n"
+                        f"<b>Hook:</b> <i>\"{script_res.hook}\"</i>\n"
+                        f"<b>Slot:</b> <code>{slot}</code>\n\n"
+                        f"📱 Attached above is your <b>TikTok-Ready MP4</b> with viral caption template."
                     )
 
                 # Record in posts.json
