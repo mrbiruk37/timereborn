@@ -72,3 +72,4 @@ def test_generate_long_script_mocked(mock_get_client):
     assert result.title_options[0] == "Marcus Aurelius Documentary"
     assert len(result.chapters) == 3
     assert "most powerful man" in result.hook
+

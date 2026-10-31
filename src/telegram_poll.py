@@ -241,3 +241,4 @@ def poll_telegram_events() -> int:
     save_last_offset(max_update_id + 1)
     logger.info(f"Handled {handled_count} Telegram events.")
     return handled_count
+

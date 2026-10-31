@@ -47,3 +47,4 @@ def test_classify_comment_mocked(mock_get_client):
     res = classify_comment_with_groq("Which stoic book should I read first?", author="Alex")
     assert res.category == "question"
     assert "Meditations" in res.draft_reply
+

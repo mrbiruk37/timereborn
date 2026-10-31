@@ -209,3 +209,4 @@ def process_comments_pipeline() -> List[Dict[str, Any]]:
     save_comments(stored_comments)
     logger.info(f"Processed {len(new_comments_found)} new comments. Total replies today: {replies_today}/{max_replies_day}")
     return new_comments_found
+

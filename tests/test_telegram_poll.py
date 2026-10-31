@@ -64,3 +64,4 @@ def test_handle_callback_reject(mock_save, mock_get_posts, mock_edit, mock_answe
     mock_delete.assert_called_once_with("vid_abc")
     mock_answer.assert_called_once()
     mock_edit.assert_called_once()
+
