@@ -65,12 +65,16 @@ timereborn/
 │   ├── captions.py           # faster-whisper word-level subtitle generation (.ass)
 │   ├── footage.py            # Pixabay provider, cache, and Ken Burns generator
 │   ├── render.py             # FFmpeg video compositor (9:16 Shorts / 16:9 long)
+│   ├── youtube.py            # Official YouTube v3 resumable upload & privacy control
+│   ├── telegram.py           # Telegram bot notifications & TikTok video delivery
 │   ├── main.py               # CLI entrypoint for local execution and CI slots
-│   ├── youtube.py            # (Phase 2) Official YouTube v3 upload & stats
-│   ├── telegram.py           # (Phase 2) Telegram bot notifications & video delivery
-│   ├── analytics.py          # (Phase 4) Metrics collector
+│   ├── research.py           # (Phase 4) Reference channels research via Data API
+│   ├── ideas.py              # (Phase 4) Ideas queue & deduplication
+│   ├── analytics.py          # (Phase 4) Metrics collector (24h/72h)
 │   ├── comments.py           # (Phase 5) Sentiment classification & auto-replies
 │   └── learn.py              # (Phase 4) Self-learning feedback loop
+├── scripts/
+│   └── get_youtube_token.py  # Local one-time OAuth token generator
 ├── tests/                    # Pytest unit tests
 ├── requirements.txt
 ├── .env.example
@@ -80,27 +84,50 @@ timereborn/
 
 ---
 
-## 🚀 Phase 1: Local CLI Testing Guide
+## 🔑 Phase 2 Setup: YouTube & Telegram
 
-### 1. Configure Local Environment
-Copy `.env.example` to `.env` and fill in your `GROQ_API_KEY`:
-```bash
-cp .env.example .env
-```
-*(Optional for Phase 1: `PIXABAY_API_KEY`. If omitted, the engine automatically uses sleek high-contrast cinematic visual backgrounds with hook animations).*
+### 1. Generate YouTube OAuth Refresh Token
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) and create a project.
+2. Enable **YouTube Data API v3** and **YouTube Analytics API**.
+3. Create OAuth 2.0 Credentials:
+   - Application type: **Desktop app**.
+   - Copy the Client ID and Client Secret.
+4. Set `YT_CLIENT_ID` and `YT_CLIENT_SECRET` in your `.env` file (or download `client_secrets.json`).
+5. Run the local authentication script:
+   ```powershell
+   python scripts/get_youtube_token.py
+   ```
+   A browser window will open. Authorize your channel. Copy the returned `YT_REFRESH_TOKEN` into your `.env` file and GitHub Secrets.
 
-### 2. Run Test Suite
-Verify that state management, JSON parsing, and captions logic are passing:
-```bash
+### 2. Configure Telegram Bot
+1. Open Telegram and message `@BotFather`.
+2. Send `/newbot`, follow prompts, and copy the Bot Token (`TELEGRAM_BOT_TOKEN`).
+3. Send a message to `@userinfobot` to retrieve your numeric user ID (`TELEGRAM_CHAT_ID`).
+4. Start a chat with your new bot and click **Start**.
+5. Save both to `.env` and GitHub Secrets.
+
+---
+
+## 🧪 Testing Phase 2
+
+### 1. Run Complete Test Suite
+```powershell
 python -m pytest tests/
 ```
+All 21 unit tests covering state, LLM parsing, captions, Telegram, and YouTube will execute with mock fixtures.
 
-### 3. Generate a Finished Short Video
-Run the CLI to generate a complete, ready-to-watch 1080x1920 MP4:
-```bash
-python -m src.main make-short --topic "The Stoic Secret to Conquering Overthinking"
+### 2. Test Local Render + Upload (Approve Mode)
+Set your credentials in `.env` and run:
+```powershell
+python -m src.main make-short --topic "The Stoic Art of Letting Go" --upload
 ```
 
-The resulting video and metadata will be placed in `output/`:
-- `output/short_<title>.mp4`: 1080x1920 vertical video with neural narration, burned word-level subtitles, hook overlay, and visual footage.
-- `output/short_<title>.json`: Complete metadata payload with description, title options, and tags.
+**What happens:**
+1. Generates original script + neural voice + word-level captions + footage.
+2. Renders 1080x1920 MP4 into `output/`.
+3. Uploads the video to YouTube as **PRIVATE** (in approve mode).
+4. Sends the **TikTok-ready MP4** to your Telegram with the complete caption and hashtags for 1-click mobile posting.
+5. Sends an **Approval Request** with inline buttons:
+   - `✅ Approve (Publish)`
+   - `❌ Reject (Delete)`
+6. Logs the post into `data/posts.json` with status `pending_approval`.

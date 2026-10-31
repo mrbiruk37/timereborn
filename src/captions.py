@@ -145,3 +145,4 @@ def create_subtitles(
             total_duration=duration,
             output_path=output_ass_path,
         )
+

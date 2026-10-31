@@ -21,3 +21,4 @@ youtube-transcript-api>=0.6.2
 
 # Testing & Quality
 pytest>=8.0.0
+

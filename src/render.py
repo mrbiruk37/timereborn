@@ -217,3 +217,4 @@ def render_video(
         pass
 
     return output_path
+

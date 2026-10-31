@@ -74,3 +74,4 @@ def test_generate_short_script_mocked(mock_get_client):
     assert result.title_options[0] == "Control What You Can"
     assert "Stop wasting" in result.hook
     assert len(result.scene_keywords) == 3
+

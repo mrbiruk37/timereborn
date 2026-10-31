@@ -202,3 +202,4 @@ def prepare_scene_footage(
         })
 
     return scenes
+

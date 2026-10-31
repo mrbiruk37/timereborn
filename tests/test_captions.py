@@ -44,3 +44,4 @@ def test_fallback_subtitles_file(tmp_path: Path):
     assert "[Events]" in content
     assert "Dialogue:" in content
     assert "POWER OVER" in content or "YOU HAVE" in content
+

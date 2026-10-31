@@ -90,3 +90,4 @@ def generate_voiceover(
     duration = get_audio_duration(output_path)
     logger.info(f"Voiceover successfully generated at {output_path} (Duration: {duration:.2f}s)")
     return duration
+

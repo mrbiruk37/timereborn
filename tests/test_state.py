@@ -62,3 +62,4 @@ def test_add_post(tmp_path: Path, monkeypatch):
     posts = state_mod.get_posts()
     assert len(posts) == 1
     assert posts[0]["id"] == "post_123"
+
