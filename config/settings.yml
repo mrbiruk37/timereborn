@@ -1,0 +1,47 @@
+# Timereborn Configuration
+
+mode: "approve" # "approve" or "auto"
+niche: "Stoic wisdom, timeless perspectives, history and productivity"
+language: "en"
+
+voice:
+  name: "en-US-ChristopherNeural" # edge-tts voice (e.g. en-US-ChristopherNeural, en-US-GuyNeural, en-US-BrianNeural)
+  rate: "+0%"
+  pitch: "+0Hz"
+
+schedule:
+  slots:
+    - id: "slot_1"
+      time_utc: "13:00"
+      type: "short"
+    - id: "slot_2"
+      time_utc: "17:00"
+      type: "short" # long video when Phase 6 is implemented
+    - id: "slot_3"
+      time_utc: "22:00"
+      type: "short"
+
+limits:
+  shorts_min_duration_sec: 25
+  shorts_max_duration_sec: 45
+  max_comments_replied_per_day: 15
+  daily_youtube_quota_limit: 9500 # buffer under 10,000 quota
+
+video:
+  shorts:
+    width: 1080
+    height: 1920
+    fps: 30
+    subtitles:
+      fontsize: 24
+      fontname: "Arial"
+      primary_color: "&H00FFFFFF"
+      outline_color: "&H00000000"
+      back_color: "&H80000000"
+      bold: true
+      alignment: 10 # centered
+      margin_v: 280
+
+llm:
+  model: "llama-3.3-70b-versatile"
+  temperature: 0.7

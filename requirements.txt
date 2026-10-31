@@ -1,0 +1,23 @@
+# Core LLM & APIs
+groq>=0.11.0
+requests>=2.31.0
+google-api-python-client>=2.118.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+
+# Audio & Voiceover
+edge-tts>=6.1.10
+faster-whisper>=1.0.0
+
+# Video & Media
+imageio-ffmpeg>=0.5.1
+Pillow>=10.2.0
+
+# Configuration & Utilities
+python-dotenv>=1.0.1
+pyyaml>=6.0.1
+pydantic>=2.6.0
+youtube-transcript-api>=0.6.2
+
+# Testing & Quality
+pytest>=8.0.0

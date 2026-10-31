@@ -1,0 +1,13 @@
+# Reference channels to study for ideas (Titles, hooks, stats, transcripts)
+# Only metadata/transcripts are studied - agents NEVER copy audio, video, or script text.
+
+channels:
+  - name: "Daily Stoic"
+    id: "UCbLm3x_8mQ7Yp4oQj9dEw6A" # Example reference channel ID
+    handle: "@DailyStoic"
+  - name: "Better Than Yesterday"
+    id: "UCpEXuV83mW5457iPrw9fD9g"
+    handle: "@BetterThanYesterday"
+  - name: "Aperture"
+    id: "UCqYPhGiB9tkShZorfgcL2lA"
+    handle: "@ApertureThinking"

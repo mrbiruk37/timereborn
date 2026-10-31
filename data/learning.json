@@ -1,0 +1,18 @@
+{
+  "last_updated": null,
+  "top_videos": [],
+  "bottom_videos": [],
+  "winning_hooks": [],
+  "losing_hooks": [],
+  "best_lengths_sec": {
+    "short": [30, 45],
+    "long": [300, 480]
+  },
+  "best_posting_times_utc": ["13:00", "17:00", "22:00"],
+  "requested_topics": [],
+  "audience_sentiment": "neutral",
+  "key_insights": [
+    "Prioritize high-curiosity opening hooks in the first 2 seconds.",
+    "Deliver immediate value and actionable philosophical wisdom."
+  ]
+}
