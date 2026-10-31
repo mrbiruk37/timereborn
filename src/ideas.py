@@ -138,11 +138,11 @@ def select_next_idea() -> Dict[str, Any]:
         # Ultimate fallback seed if both backlog and research fail
         return {
             "id": str(uuid.uuid4())[:8],
-            "title_seed": "The Daily Stoic Habit for Mental Toughness",
-            "topic": "Marcus Aurelius on preparing for difficult people each morning",
-            "hook_seed": "When you wake up in the morning, expect people to be difficult.",
+            "title_seed": "If Nikola Tesla Woke Up in 2026",
+            "topic": "Nikola Tesla reborn witnessing AI humanoid robots and wireless technology",
+            "hook_seed": "Imagine Nikola Tesla woke up in 2026 and saw Elon Musk's robots...",
             "source": "system_default",
-            "proven_score": 0.9,
+            "proven_score": 0.95,
             "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         }
 

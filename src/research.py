@@ -98,11 +98,11 @@ def synthesize_ideas_from_research(researched_videos: List[Dict[str, Any]]) -> L
         return [
             {
                 "id": str(uuid.uuid4())[:8],
-                "title_seed": "Marcus Aurelius on Controlling Your Mind",
-                "topic": "Stoic emotional resilience and inner citadel",
-                "hook_seed": "You have power over your mind, not outside events.",
+                "title_seed": "If Nikola Tesla Woke Up in 2026",
+                "topic": "Nikola Tesla reborn reacting to Elon Musk, humanoid robots, and wireless energy",
+                "hook_seed": "Imagine Nikola Tesla woke up in 2026 and saw Elon Musk's robots...",
                 "source": "fallback_seed",
-                "proven_score": 0.85,
+                "proven_score": 0.95,
                 "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             }
         ]
@@ -182,10 +182,10 @@ def synthesize_tiktok_inspiration(tiktok_creators: List[Dict[str, Any]]) -> List
 We are studying the viral storytelling formats and hook structures of these top TikTok creators:
 {creators_desc}
 
-KEY ATTRIBUTES OF THESE CHANNELS:
-- AI-driven historical scenes, mysterious what-if scenarios, and dramatic timeline paradoxes
-- Deep narrative tension in the first 2 seconds (scroll-stopping pattern interrupts)
-- Universal themes: time, empires, ancient secrets, psychological discipline
+CORE FORMULA OF TIMEREBORN:
+- Iconic historical figures, conquerors, inventors, or philosophers (Nikola Tesla, Julius Caesar, Cleopatra, Leonardo da Vinci, Marcus Aurelius, Alexander the Great, ancient Spartans) REBORN in the modern world (2025/2026).
+- Direct reactions to current news, AI breakthroughs, humanoid robots, supercars, modern wealth vs ancient empires, or contemporary human dilemmas.
+- Intense narrative tension in the first 2 seconds (immediate scroll-stopping pattern interrupts).
 
 TASK:
 Brainstorm 3 completely ORIGINAL, fresh video concepts that fit this exact high-retention viral style.
@@ -196,7 +196,7 @@ Return JSON:
   "ideas": [
     {{
       "title_seed": "Original high-retention title",
-      "topic": "Compelling historical or philosophical premise",
+      "topic": "Compelling historical reborn premise reacting to modern reality",
       "hook_seed": "Opening 2-second hook line to stop the scroll",
       "proven_score": 0.92
     }}

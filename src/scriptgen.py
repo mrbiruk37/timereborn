@@ -62,41 +62,49 @@ def generate_short_script(topic: str, context: Optional[str] = None) -> ShortScr
     settings = load_settings()
     learning = get_learning()
 
-    niche = settings.get("niche", "Stoic wisdom, timeless perspectives, history and productivity")
+    niche = settings.get("niche", "TimeReborn: Iconic historical figures reborn in the modern world reacting to current news, AI, and futuristic breakthroughs")
     winning_hooks = learning.get("winning_hooks", [])
     key_insights = learning.get("key_insights", [])
 
-    system_prompt = f"""You are an elite YouTube Shorts and TikTok scriptwriter specializing in {niche}.
-Your goal is to write captivating, viral, and 100% original vertical video scripts.
+    system_prompt = f"""You are the lead viral scriptwriter for TimeReborn, a high-impact YouTube Shorts and TikTok channel.
+The channel's core concept:
+Iconic historical figures, visionaries, conquerors, and philosophers (such as Nikola Tesla, Julius Caesar, Leonardo da Vinci, Marcus Aurelius, Cleopatra, Albert Einstein, Socrates, Alexander the Great, ancient Spartans/emperors) are REBORN in the modern world (2025/2026).
+They witness and react with awe, shock, or ruthless wisdom to CURRENT REAL-WORLD NEWS and modern paradoxes:
+- Artificial Intelligence & humanoid robots (Tesla Optimus, ChatGPT, AI models)
+- Brain chips (Neuralink), supercars, Cybertrucks, space rockets
+- Modern wealth, Wall Street, and corporate empires vs ancient empires
+- Social media addiction, screen obsession, modern loneliness vs ancient warfare & stoicism
+- Breaking global news, geopolitics, and human dilemmas
 
 HARD RULES:
 1. ORIGINALITY: Never copy existing text or scripts. Write completely fresh, compelling narration.
-2. DURATION: The narration MUST be between 65 and 105 words (aiming for 25-45 seconds when spoken at normal pace).
+2. DURATION & PACING: The narration MUST be between 65 and 95 words (25-35 seconds spoken aloud at normal pace). Fast-paced, punchy, cinematic.
 3. STRUCTURE:
-   - Hook (first 2 seconds): A pattern interrupt or curiosity-gap question that stops the scroll immediately.
-   - Core insight: A sharp, insightful philosophical or practical lesson. No fluff or generic filler.
-   - Loop ending: End with a concluding thought that seamlessly loops back to the start.
-4. FORMAT: Narration script MUST contain ONLY words to be spoken aloud. NO stage directions, NO asterisks, NO speaker labels.
-5. DISCLOSURE: YouTube requires disclosing AI-generated content. In the description, include: 'Created with AI assistance (script & voiceover).'
-6. OUTPUT: Return strictly valid JSON adhering to the specified schema.
+   - Hook (first 2 seconds): An irresistible pattern interrupt placing the reborn historical figure face-to-face with modern reality or current news.
+   - Core confrontation/insight: The sharp contrast between ancient mindset/power and modern absurdity or technological marvels.
+   - Loop ending: End with a chilling question or profound paradox that seamlessly loops back to the start.
+4. FORMAT: Narration script MUST contain ONLY words to be spoken aloud. NO stage directions, NO brackets, NO speaker labels.
+5. VISUAL KEYWORDS: Provide 5-7 vivid, concrete stock-footage search keywords that Pixabay can find (e.g. "humanoid robot", "cyberpunk city neon", "supercar driving", "ancient statue", "lightning tesla coil", "crowd smartphones").
+6. DISCLOSURE: In the description, include: 'Created with AI assistance (script & voiceover).'
+7. OUTPUT: Return strictly valid JSON adhering to the specified schema.
 """
 
-    user_prompt = f"""Topic: {topic}
-{"Additional context/idea: " + context if context else ""}
+    user_prompt = f"""Topic / Premise: {topic}
+{"Additional context/angle: " + context if context else ""}
 
 LEARNING INSIGHTS FROM PAST TOP PERFORMERS:
-- Winning hook patterns: {winning_hooks[:3] if winning_hooks else "Bold questions, counter-intuitive truths, historical quotes"}
-- Strategic notes: {key_insights[:3] if key_insights else "High retention pacing, direct emotional resonance"}
+- Winning hook patterns: {winning_hooks[:3] if winning_hooks else "High curiosity gaps, historical figures meeting modern tech, bold counter-intuitive truths"}
+- Strategic notes: {key_insights[:3] if key_insights else "High retention pacing, dramatic tension in the first 2 seconds"}
 
 Generate a JSON object with:
 {{
-  "title_options": ["Title 1", "Title 2", "Title 3"],
-  "hook": "Opening 2-second hook line",
-  "script": "Full narration text to speak (65-105 words, no stage directions)",
-  "scene_keywords": ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"],
-  "description": "Engaging description with summary, takeaways, hashtags, and AI disclosure",
-  "tags": ["stoicism", "mindset", "wisdom", "focus", "history"],
-  "hashtags": ["#Shorts", "#Stoicism", "#Wisdom", "#Philosophy"]
+  "title_options": ["Curiosity-inducing Title 1", "Title 2", "Title 3"],
+  "hook": "Opening 2-second hook line (e.g. 'Imagine Nikola Tesla woke up in 2026 and saw Elon Musk's robots...')",
+  "script": "Full narration text to speak (65-95 words, no stage directions, spoken as dramatic storytelling)",
+  "scene_keywords": ["concrete keyword 1", "concrete keyword 2", "concrete keyword 3", "concrete keyword 4", "concrete keyword 5"],
+  "description": "Viral YouTube/TikTok description with teaser, insights, hashtags, and AI disclosure",
+  "tags": ["TimeReborn", "history", "ai", "future", "whatif", "technology", "mindset"],
+  "hashtags": ["#Shorts", "#TimeReborn", "#History", "#AI", "#Future", "#Viral", "#FYP"]
 }}
 """
 
@@ -133,10 +141,10 @@ def generate_long_script(topic: str, context: Optional[str] = None) -> LongScrip
     settings = load_settings()
     learning = get_learning()
 
-    niche = settings.get("niche", "Stoic wisdom, timeless perspectives, history and productivity")
+    niche = settings.get("niche", "TimeReborn: Iconic historical figures reborn in the modern world reacting to current news, AI, and futuristic breakthroughs")
 
-    system_prompt = f"""You are a master essayist and documentary scriptwriter specializing in {niche}.
-Write an engaging, deep, 5 to 8 minute long-form YouTube documentary script structured cleanly in chapters.
+    system_prompt = f"""You are a master cinematic essayist and documentary scriptwriter for TimeReborn.
+Your specialty is deep, immersive mini-documentaries where legendary historical figures, ancient empires, or forgotten geniuses are reborn or analyzed against the cutting edge of modern society, AI breakthroughs, and current world events.
 
 HARD RULES:
 1. ORIGINALITY: 100% original prose, historical anecdotes, and philosophical analysis.

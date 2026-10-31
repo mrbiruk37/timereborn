@@ -1,11 +1,11 @@
 # Timereborn Configuration
 
 mode: "approve" # "approve" or "auto"
-niche: "Stoic wisdom, timeless perspectives, history and productivity"
+niche: "TimeReborn: Iconic historical figures and legends reborn in the modern world, reacting to current news, artificial intelligence, futuristic breakthroughs, and modern human dilemmas."
 language: "en"
 
 voice:
-  name: "en-US-ChristopherNeural" # edge-tts voice (e.g. en-US-ChristopherNeural, en-US-GuyNeural, en-US-BrianNeural)
+  name: "en-US-ChristopherNeural" # deep, dramatic, cinematic narration voice
   rate: "+0%"
   pitch: "+0Hz"
 
@@ -43,6 +43,6 @@ video:
       margin_v: 280
 
 llm:
-  model: "llama-3.3-70b-versatile"
+  model: "openai/gpt-oss-120b"
   temperature: 0.7
 

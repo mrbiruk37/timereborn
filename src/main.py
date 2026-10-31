@@ -11,6 +11,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Ensure Windows console handles UTF-8 gracefully without charmap crashes
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -30,6 +38,7 @@ from src.scriptgen import generate_long_script, generate_short_script
 from src.state import add_post, load_settings
 from src.telegram import send_alert, send_approval_request, send_message, send_video
 from src.telegram_poll import poll_telegram_events
+from src.tiktok import format_tiktok_caption, is_tiktok_configured, post_to_tiktok
 from src.voice import generate_voiceover
 from src.youtube import upload_video
 
@@ -145,18 +154,27 @@ def cmd_make_short(
                 yt_url = yt_res["video_url"]
 
                 # High-virality TikTok caption template
-                tag_list = script_res.hashtags or ["#Shorts", "#Stoicism", "#History", "#Mindset", "#Philosophy", "#Viral"]
-                if "#Shorts" not in tag_list:
-                    tag_list.insert(0, "#Shorts")
-                viral_hashtags = " ".join(tag_list)
-
-                tiktok_caption = (
-                    f"🔥 {chosen_title}\n\n"
-                    f"\"{script_res.hook}\"\n\n"
-                    f"👇 Follow for daily timeless wisdom & historical perspectives.\n"
-                    f"Drop your thoughts below!\n\n"
-                    f"{viral_hashtags}"
+                tiktok_caption = format_tiktok_caption(
+                    title=chosen_title,
+                    hook=script_res.hook,
+                    hashtags=script_res.hashtags,
                 )
+
+                # Attempt direct automated TikTok upload if session is configured
+                logger.info("Attempting TikTok publishing...")
+                tiktok_res = post_to_tiktok(
+                    video_path=final_output,
+                    title=chosen_title,
+                    description=tiktok_caption,
+                    tags=script_res.tags,
+                )
+                
+                if tiktok_res.get("status") == "published":
+                    tiktok_status_desc = "✅ Live on TikTok!"
+                elif tiktok_res.get("status") == "pending_credentials":
+                    tiktok_status_desc = "📱 MP4 dispatched to Telegram (Add TIKTOK_SESSION_ID to auto-post)"
+                else:
+                    tiktok_status_desc = f"⚠️ {tiktok_res.get('error', 'Pending')}"
 
                 # Deliver to Telegram
                 if mode == "approve":
@@ -169,6 +187,7 @@ def cmd_make_short(
                         caption=tiktok_caption,
                         slot=slot,
                         concept_notes=f"Generated from topic: {topic}",
+                        tiktok_status=tiktok_status_desc,
                     )
                 else:
                     logger.info("Sending public video announcement and TikTok file to Telegram...")
@@ -177,6 +196,7 @@ def cmd_make_short(
                         f"🚀 <b>Video Published Live!</b>\n\n"
                         f"<b>Title:</b> {chosen_title}\n"
                         f"<b>YouTube Link:</b> <a href=\"{yt_url}\">{yt_url}</a>\n"
+                        f"<b>TikTok Status:</b> {tiktok_status_desc}\n"
                         f"<b>Hook:</b> <i>\"{script_res.hook}\"</i>\n"
                         f"<b>Slot:</b> <code>{slot}</code>\n\n"
                         f"📱 Attached above is your <b>TikTok-Ready MP4</b> with viral caption template."
@@ -187,6 +207,7 @@ def cmd_make_short(
                     "id": yt_id,
                     "youtube_id": yt_id,
                     "youtube_url": yt_url,
+                    "tiktok_status": tiktok_res.get("status"),
                     "title": chosen_title,
                     "hook": script_res.hook,
                     "description": script_res.description,

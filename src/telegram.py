@@ -1,5 +1,6 @@
 """Official Telegram Bot API client for reports, TikTok delivery, approval flow, and polling."""
 
+import html
 import json
 import logging
 import os
@@ -165,10 +166,11 @@ def send_approval_request(
     caption: str,
     slot: str = "manual",
     concept_notes: str = "",
+    tiktok_status: Optional[str] = None,
 ) -> None:
     """Send TikTok-ready video and YouTube approval request with inline buttons."""
     tiktok_caption = (
-        f"📱 <b>TikTok-Ready Video</b>\n\n"
+        f"📱 <b>TikTok Video & Template</b>\n\n"
         f"{caption}"
     )
     send_video(video_path=video_path, caption=tiktok_caption)
@@ -182,14 +184,19 @@ def send_approval_request(
         ]
     }
 
+    tiktok_info = f"\n<b>TikTok:</b> {tiktok_status}" if tiktok_status else ""
+
+    escaped_title = html.escape(title)
+    escaped_notes = html.escape(concept_notes or "TimeReborn perspective")
+
     report_text = (
-        f"🎬 <b>New Video Uploaded to YouTube!</b>\n\n"
-        f"<b>Title:</b> {title}\n"
-        f"<b>YouTube Link:</b> <a href=\"{youtube_url}\">{youtube_url}</a>\n"
+        f"🎬 <b>New Video Uploaded!</b>\n\n"
+        f"<b>Title:</b> {escaped_title}\n"
+        f"<b>YouTube Link:</b> <a href=\"{youtube_url}\">{youtube_url}</a>{tiktok_info}\n"
         f"<b>Status:</b> 🔒 Private (Awaiting Approval)\n"
         f"<b>Slot:</b> <code>{slot}</code>\n"
-        f"<b>Pattern:</b> {concept_notes or 'Algorithmic curiosity hook'}\n\n"
-        f"<i>Review the private video on YouTube or the attached TikTok file. Tap Approve to make it public!</i>"
+        f"<b>Premise:</b> {escaped_notes}\n\n"
+        f"<i>Tap Approve below to set YouTube video to Public!</i>"
     )
 
     send_message(text=report_text, reply_markup=keyboard)
@@ -197,9 +204,11 @@ def send_approval_request(
 
 def send_alert(error_summary: str, details: Optional[str] = None) -> None:
     """Send an immediate alert on any pipeline failure (Hard Rule)."""
-    text = f"🚨 <b>TIMEREBORN FAILURE ALERT</b>\n\n<b>Error:</b> {error_summary}"
+    clean_summary = html.escape(str(error_summary))
+    text = f"🚨 <b>TIMEREBORN FAILURE ALERT</b>\n\n<b>Error:</b> {clean_summary}"
     if details:
-        text += f"\n\n<pre>{details[:500]}</pre>"
+        clean_details = html.escape(str(details)[:500])
+        text += f"\n\n<pre>{clean_details}</pre>"
     try:
         send_message(text=text)
     except Exception as e:
