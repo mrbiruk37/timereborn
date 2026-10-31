@@ -450,3 +450,4 @@ def scan_and_update_references(reference_dir: Optional[Path] = None) -> Dict[str
         save_reference_analyses(analyses)
 
     return analyses
+

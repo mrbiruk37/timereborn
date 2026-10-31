@@ -27,5 +27,23 @@
     "created_at": "2026-10-31T19:47:09Z",
     "video_path": "output\\short_When_Caesar_Meets_AI__Empire_o.mp4",
     "duration_seconds": 34.44
+  },
+  {
+    "id": "pIUWgsoLD-E",
+    "youtube_id": "pIUWgsoLD-E",
+    "youtube_url": "https://youtu.be/pIUWgsoLD-E",
+    "platform": "YouTube",
+    "title": "Hermes' Secret Sign‑Off: Unlock the Next Trend",
+    "hook": "OUTRO MUSIC—your signal’s about to fly!",
+    "reference_file": "1.mp4",
+    "style_variant": "split_screen_comparison",
+    "topic_angle": "Leverage the timeless appeal of the ancient Greek messenger god Hermes, crafting a swift, witty sign‑off that positions the brand as the modern conduit for news, trends, and community, urging viewers to ‘catch the next message’ by staying connected.",
+    "slot_time_utc": "slot_1",
+    "privacy_status": "public",
+    "status": "published",
+    "tiktok_status": "pending_credentials",
+    "created_at": "2026-10-31T20:37:45Z",
+    "video_path": "C:\\Users\\biruk\\OneDrive\\Desktop\\Timereborn\\output\\short_Hermes__Secret_Sign_Off__Unloc.mp4",
+    "duration_seconds": 17.02
   }
 ]

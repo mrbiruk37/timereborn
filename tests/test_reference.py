@@ -61,3 +61,4 @@ def test_analyze_audio_parsing(mock_sub, mock_groq, tmp_path):
     res = analyze_audio(Path("dummy.mp4"), "ffmpeg", tmp_path)
     assert res["has_voiceover"] is True
     assert res["word_count"] > 0
+

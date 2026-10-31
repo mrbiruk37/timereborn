@@ -246,3 +246,4 @@ Generate a JSON object with:
 
     logger.warning("Reached max attempts for similarity check. Returning best generated script.")
     return parsed
+

@@ -34,3 +34,4 @@ def test_select_reference_and_variant():
     assert "style_variant" in sel
     assert "topic_angle" in sel
     assert sel["reference_file"].endswith((".mp4", ".mov", ".webm"))
+

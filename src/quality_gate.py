@@ -147,3 +147,4 @@ def run_quality_gate(
         logger.warning(f"Quality gate FAILED for {video_path.name}: {issues}")
 
     return passed, issues
+
