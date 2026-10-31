@@ -1,4 +1,4 @@
-"""Official Telegram Bot API client for reports, TikTok video delivery, and approval flow."""
+"""Official Telegram Bot API client for reports, TikTok delivery, approval flow, and polling."""
 
 import json
 import logging
@@ -67,6 +67,48 @@ def send_message(
     return {"ok": False, "description": "Failed to send message after retries"}
 
 
+def edit_message_text(
+    chat_id: str,
+    message_id: int,
+    text: str,
+    reply_markup: Optional[Dict[str, Any]] = None,
+    parse_mode: str = "HTML",
+) -> Dict[str, Any]:
+    """Edit an existing message text in Telegram."""
+    cfg = get_telegram_config()
+    url = f"https://api.telegram.org/bot{cfg['token']}/editMessageText"
+    payload: Dict[str, Any] = {
+        "chat_id": chat_id,
+        "message_id": message_id,
+        "text": text,
+        "parse_mode": parse_mode,
+    }
+    if reply_markup is not None:
+        payload["reply_markup"] = json.dumps(reply_markup)
+
+    try:
+        resp = requests.post(url, data=payload, timeout=15)
+        return resp.json()
+    except Exception as e:
+        logger.error(f"Failed to edit message {message_id}: {e}")
+        return {"ok": False, "description": str(e)}
+
+
+def answer_callback_query(callback_query_id: str, text: Optional[str] = None) -> Dict[str, Any]:
+    """Acknowledge Telegram inline button click."""
+    cfg = get_telegram_config()
+    url = f"https://api.telegram.org/bot{cfg['token']}/answerCallbackQuery"
+    payload = {"callback_query_id": callback_query_id}
+    if text:
+        payload["text"] = text
+    try:
+        resp = requests.post(url, data=payload, timeout=10)
+        return resp.json()
+    except Exception as e:
+        logger.warning(f"Failed to answer callback query: {e}")
+        return {"ok": False}
+
+
 def send_video(
     video_path: Path,
     caption: str,
@@ -81,7 +123,6 @@ def send_video(
     if not video_path.exists():
         raise FileNotFoundError(f"Video file not found at: {video_path}")
 
-    # Check file size (Telegram Bot API standard limit is 50MB)
     size_mb = video_path.stat().st_size / (1024 * 1024)
     if size_mb > 50:
         logger.warning(f"Video file ({size_mb:.1f}MB) exceeds Telegram 50MB limit.")
@@ -95,7 +136,7 @@ def send_video(
     url = f"https://api.telegram.org/bot{cfg['token']}/sendVideo"
     data: Dict[str, Any] = {
         "chat_id": target_chat,
-        "caption": caption[:1024],  # Telegram caption max length
+        "caption": caption[:1024],
         "parse_mode": "HTML",
         "supports_streaming": True,
     }
@@ -126,7 +167,6 @@ def send_approval_request(
     concept_notes: str = "",
 ) -> None:
     """Send TikTok-ready video and YouTube approval request with inline buttons."""
-    # 1. Send the TikTok video with caption and hashtags
     tiktok_caption = (
         f"📱 <b>TikTok-Ready Video</b>\n\n"
         f"<b>Title:</b> {title}\n"
@@ -134,7 +174,6 @@ def send_approval_request(
     )
     send_video(video_path=video_path, caption=tiktok_caption)
 
-    # 2. Send YouTube report with inline approval buttons
     keyboard = {
         "inline_keyboard": [
             [
@@ -166,3 +205,21 @@ def send_alert(error_summary: str, details: Optional[str] = None) -> None:
     except Exception as e:
         logger.error(f"Could not send Telegram alert: {e}")
 
+
+def get_updates(offset: Optional[int] = None, timeout: int = 10) -> List[Dict[str, Any]]:
+    """Poll Telegram getUpdates for new messages and button callbacks."""
+    cfg = get_telegram_config()
+    url = f"https://api.telegram.org/bot{cfg['token']}/getUpdates"
+    params: Dict[str, Any] = {"timeout": timeout}
+    if offset is not None:
+        params["offset"] = offset
+
+    try:
+        resp = requests.get(url, params=params, timeout=timeout + 5)
+        if resp.status_code == 200:
+            data = resp.json()
+            return data.get("result", [])
+        return []
+    except Exception as e:
+        logger.warning(f"Error fetching Telegram updates: {e}")
+        return []

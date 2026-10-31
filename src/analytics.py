@@ -136,3 +136,4 @@ def build_stats_snapshot(posts: List[Dict[str, Any]]) -> Dict[str, Any]:
             "recent_posts": recent_posts[-5:],
         },
     }
+

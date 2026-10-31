@@ -172,3 +172,4 @@ def select_next_idea() -> Dict[str, Any]:
     save_ideas(remaining)
 
     return selected
+

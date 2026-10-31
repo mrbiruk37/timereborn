@@ -39,3 +39,4 @@ def test_synthesize_ideas_mocked(mock_get_client):
     assert len(ideas) == 1
     assert ideas[0]["title_seed"] == "The Daily Stoic Rule"
     assert ideas[0]["proven_score"] == 0.88
+

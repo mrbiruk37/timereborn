@@ -181,3 +181,4 @@ def run_research() -> List[Dict[str, Any]]:
     original_ideas = synthesize_ideas_from_research(all_researched_videos)
     logger.info(f"Synthesized {len(original_ideas)} new original idea candidates from research.")
     return original_ideas
+

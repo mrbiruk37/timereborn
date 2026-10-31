@@ -104,7 +104,7 @@ def render_scene_clip(
     return output_clip_path
 
 
-def inject_hook_into_ass(ass_path: Path, hook_text: str, duration: float = 2.5) -> None:
+def inject_hook_into_ass(ass_path: Path, hook_text: str, duration: float = 2.5, width: int = 1080) -> None:
     """Prepend an animated hook badge into the ASS subtitle events."""
     if not ass_path.exists() or not hook_text:
         return
@@ -114,15 +114,16 @@ def inject_hook_into_ass(ass_path: Path, hook_text: str, duration: float = 2.5) 
             content = f.read()
 
         clean_hook = hook_text.strip().replace("\n", " ").upper()
-        # Word wrap hook text if long
         hook_words = clean_hook.split()
         if len(hook_words) > 5:
             mid = len(hook_words) // 2
             clean_hook = " ".join(hook_words[:mid]) + "\\N" + " ".join(hook_words[mid:])
 
+        pos_x = width // 2
+        pos_y = 200 if width > 1080 else 240
         hook_line = (
             f"Dialogue: 1,0:00:00.00,0:00:{duration:05.2f},Hook,,0,0,0,,"
-            f"{{\\an8\\pos(540,240)\\fad(150,250)\\c&H00FFFF&\\bord5\\shad3}}{clean_hook}\n"
+            f"{{\\an8\\pos({pos_x},{pos_y})\\fad(150,250)\\c&H00FFFF&\\bord5\\shad3}}{clean_hook}\n"
         )
 
         if "[Events]" in content:
@@ -153,7 +154,7 @@ def render_video(
     temp_dir.mkdir(parents=True, exist_ok=True)
 
     if hook_text and subtitles_path.exists():
-        inject_hook_into_ass(subtitles_path, hook_text, duration=2.5)
+        inject_hook_into_ass(subtitles_path, hook_text, duration=2.5, width=width)
 
     # 1. Normalize each scene clip
     rendered_clips = []

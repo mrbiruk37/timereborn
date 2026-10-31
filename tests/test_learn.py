@@ -55,3 +55,4 @@ def test_send_daily_summary(mock_posts, mock_learning, mock_send_msg):
     text = mock_send_msg.call_args[1]["text"]
     assert "Timereborn Daily Report" in text
     assert "Winning Video" in text
+

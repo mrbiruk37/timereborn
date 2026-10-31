@@ -163,3 +163,4 @@ def send_daily_summary() -> None:
         logger.info("Daily summary successfully delivered to Telegram.")
     except Exception as e:
         logger.warning(f"Failed to send daily summary: {e}")
+

@@ -16,7 +16,7 @@ schedule:
       type: "short"
     - id: "slot_2"
       time_utc: "17:00"
-      type: "short" # long video when Phase 6 is implemented
+      type: "long" # Phase 6: 16:9 long horizontal video
     - id: "slot_3"
       time_utc: "22:00"
       type: "short"

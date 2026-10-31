@@ -27,8 +27,25 @@ def format_ass_timestamp(seconds: float) -> str:
     return f"{hours}:{minutes:02d}:{secs:02d}.{centis:02d}"
 
 
-def get_ass_header(width: int = 1080, height: int = 1920) -> str:
-    """Generate modern ASS script header with centered high-contrast styling."""
+def get_ass_header(width: int = 1080, height: int = 1920, orientation: str = "vertical") -> str:
+    """Generate modern ASS script header with high-contrast styling for vertical or horizontal video."""
+    if orientation == "horizontal" or width > height:
+        # 16:9 widescreen layout
+        return f"""[Script Info]
+ScriptType: v4.00+
+PlayResX: {width}
+PlayResY: {height}
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial Black,46,&H00FFFFFF,&H0000FFFF,&H00000000,&H90000000,-1,0,0,0,100,100,1,0,1,4,2,2,100,100,120,1
+Style: Hook,Arial Black,54,&H0000FFFF,&H00000000,&H00000000,&HA0000000,-1,0,0,0,100,100,1,0,1,5,2,2,100,100,160,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+"""
+
     return f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {width}
@@ -79,7 +96,13 @@ def build_ass_events(chunks: List[List[WordTimestamp]]) -> str:
     return "\n".join(lines)
 
 
-def generate_fallback_subtitles(script: str, total_duration: float, output_path: Path) -> Path:
+def generate_fallback_subtitles(
+    script: str,
+    total_duration: float,
+    output_path: Path,
+    width: int = 1080,
+    height: int = 1920,
+) -> Path:
     """Generate evenly spaced subtitles if whisper is unavailable or fails."""
     logger.info("Generating fallback proportional subtitles...")
     words = script.split()
@@ -93,7 +116,7 @@ def generate_fallback_subtitles(script: str, total_duration: float, output_path:
         for i, w in enumerate(words)
     ]
     chunks = chunk_words(word_timestamps, max_words=3)
-    content = get_ass_header() + build_ass_events(chunks)
+    content = get_ass_header(width=width, height=height) + build_ass_events(chunks)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
@@ -107,6 +130,8 @@ def create_subtitles(
     script_fallback: Optional[str] = None,
     total_duration: Optional[float] = None,
     model_size: str = "tiny",
+    width: int = 1080,
+    height: int = 1920,
 ) -> Path:
     """Transcribe audio with faster-whisper to generate word-level ASS subtitles."""
     output_ass_path = Path(output_ass_path)
@@ -128,7 +153,7 @@ def create_subtitles(
             raise ValueError("No words extracted by whisper")
 
         chunks = chunk_words(extracted_words, max_words=3)
-        ass_content = get_ass_header() + build_ass_events(chunks)
+        ass_content = get_ass_header(width=width, height=height) + build_ass_events(chunks)
 
         with open(output_ass_path, "w", encoding="utf-8") as f:
             f.write(ass_content)
@@ -144,5 +169,7 @@ def create_subtitles(
             script=script_fallback or "Timereborn",
             total_duration=duration,
             output_path=output_ass_path,
+            width=width,
+            height=height,
         )
 

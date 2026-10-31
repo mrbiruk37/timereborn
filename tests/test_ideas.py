@@ -44,3 +44,4 @@ def test_select_next_idea(mock_save_ideas, mock_get_ideas):
     selected = select_next_idea()
     assert selected["id"] in ("idea_1", "idea_2")
     assert mock_save_ideas.called
+

@@ -59,3 +59,4 @@ def test_collect_milestone_analytics(mock_save_stats, mock_save_posts, mock_get_
     assert mock_fetch.called
     assert mock_save_posts.called
     assert mock_save_stats.called
+
