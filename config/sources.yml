@@ -1,9 +1,10 @@
-# Reference channels to study for ideas (Titles, hooks, stats, transcripts)
-# Only metadata/transcripts are studied - agents NEVER copy audio, video, or script text.
+# Reference channels and TikTok creators to study for concepts and viral hook structures.
+# HARD RULE 1: Only topics, hooks, and themes are studied for inspiration.
+# NEVER download, copy, re-upload, or edit other creators' audio, video, or script text.
 
 channels:
   - name: "Daily Stoic"
-    id: "UCbLm3x_8mQ7Yp4oQj9dEw6A" # Example reference channel ID
+    id: "UCbLm3x_8mQ7Yp4oQj9dEw6A"
     handle: "@DailyStoic"
   - name: "Better Than Yesterday"
     id: "UCpEXuV83mW5457iPrw9fD9g"
@@ -12,3 +13,19 @@ channels:
     id: "UCqYPhGiB9tkShZorfgcL2lA"
     handle: "@ApertureThinking"
 
+tiktok_creators:
+  - handle: "@zartofrd"
+    url: "https://www.tiktok.com/@zartofrd"
+    theme: "Cinematic visual storytelling, historical paradoxes, and immersive facts"
+  - handle: "@dodoulul0"
+    url: "https://www.tiktok.com/@dodoulul0"
+    theme: "Ancient history, dramatic battles, and timeless stories"
+  - handle: "@daschopakacz"
+    url: "https://www.tiktok.com/@daschopakacz"
+    theme: "Viral curiosity hooks and thought experiments"
+  - handle: "@isabel_negociosdigitales"
+    url: "https://www.tiktok.com/@isabel_negociosdigitales"
+    theme: "Mindset, productivity, and modern wisdom"
+  - handle: "@sceneai09"
+    url: "https://www.tiktok.com/@sceneai09"
+    theme: "Historical scenes, alternate timelines, and ancient secrets"

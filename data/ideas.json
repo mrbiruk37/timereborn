@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "id": "de7229a6",
+    "title_seed": "The Hidden Cost of Perfect Skin: What the Beauty Industry Won’t Tell You",
+    "topic": "Exploring how extreme grooming and aesthetic trends can trigger hidden health issues and environmental impacts",
+    "hook_seed": "What if the quest for flawless skin is actually fueling a silent health crisis?",
+    "source": "research",
+    "proven_score": 0.87,
+    "created_at": "2026-10-31T18:51:43Z"
+  },
+  {
+    "id": "3a96d698",
+    "title_seed": "5-Day Liquid Diet Challenge: What Happens When You Drink Only One Thing",
+    "topic": "A controlled experiment living on a single beverage (e.g., coffee, green tea, broth) for five days and tracking physiological changes",
+    "hook_seed": "Can your body adapt to surviving on just one beverage for a whole week?",
+    "source": "research",
+    "proven_score": 0.83,
+    "created_at": "2026-10-31T18:51:43Z"
+  },
+  {
+    "id": "f721747c",
+    "title_seed": "When Trends Turn Toxic: How Viral Hacks Are Wrecking Your Wellbeing",
+    "topic": "Investigating popular internet health hacks that sound simple but have dangerous side effects",
+    "hook_seed": "Are the latest TikTok health hacks secretly harming you?",
+    "source": "research",
+    "proven_score": 0.86,
+    "created_at": "2026-10-31T18:51:43Z"
+  },
+  {
+    "id": "bdb05d05",
+    "title_seed": "When Rome Forgot Its Calendar",
+    "topic": "A speculative look at how a missing calendar reform in ancient Rome could have altered the concept of time and empire cycles",
+    "hook_seed": "What if the day you think is Monday never existed?",
+    "source": "tiktok_research",
+    "proven_score": 0.94,
+    "created_at": "2026-10-31T18:51:46Z"
+  },
+  {
+    "id": "3e29057a",
+    "title_seed": "The Lost Library That Could Rewrite History",
+    "topic": "Exploring a secret AI‑enhanced archive hidden beneath Alexandria that reveals alternate outcomes for every major empire",
+    "hook_seed": "Imagine a library that knows the future of every empire—today we open its doors.",
+    "source": "tiktok_research",
+    "proven_score": 0.91,
+    "created_at": "2026-10-31T18:51:46Z"
+  },
+  {
+    "id": "93e04394",
+    "title_seed": "The Battle That Never Happened: AI Recreates the 3rd Century Clash",
+    "topic": "Using AI to visualize an alternate timeline where the Romans won the Battle of the Teutoburg Forest, reshaping Europe",
+    "hook_seed": "What if the Romans never lost at Teutoburg Forest? Watch history flip in seconds.",
+    "source": "tiktok_research",
+    "proven_score": 0.93,
+    "created_at": "2026-10-31T18:51:46Z"
+  }
+]
