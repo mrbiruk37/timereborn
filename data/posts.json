@@ -96,5 +96,22 @@
     "tiktok_status": "pending_credentials",
     "video_path": "output\\repost_Did_You_Spot_Every_Hidden_Frog.mp4",
     "duration_seconds": 24.0
+  },
+  {
+    "id": "dry_run_repost",
+    "youtube_id": "dry_run_repost",
+    "youtube_url": "https://youtu.be/dry_run_repost",
+    "platform": "YouTube Shorts",
+    "title": "The Forgotten Ancient Trick",
+    "hook": "This changed empires.",
+    "original_tiktok_id": "998877",
+    "original_author": "history_buff",
+    "original_url": "https://www.tiktok.com/@history_buff/video/998877",
+    "slot": "test_slot",
+    "privacy_status": "public",
+    "status": "published",
+    "tiktok_status": "delivered_to_telegram",
+    "video_path": "output\\repost_The_Forgotten_Ancient_Trick.mp4",
+    "duration_seconds": 25.0
   }
 ]
