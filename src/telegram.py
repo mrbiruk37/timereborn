@@ -63,6 +63,14 @@ def format_real_post_message(post_record: Dict[str, Any]) -> str:
         f"Slot: {slot}\n"
         f"Based on: {ref_file} | Style: {style_variant}"
     )
+
+    tags_list = post_record.get("hashtags") or ["#Shorts", "#TimeReborn", "#Viral", "#FYP"]
+    tag_str = " ".join([t if t.startswith("#") else f"#{t}" for t in tags_list[:7]])
+    msg += (
+        f"\n\nTikTok Ready (Copy & Paste):\n"
+        f"Title: {title}\n"
+        f"{tag_str}"
+    )
     return msg
 
 

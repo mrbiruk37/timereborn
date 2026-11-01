@@ -220,24 +220,17 @@ def cmd_post_slot(slot: str = "auto", dry_run: bool = False) -> Path:
         uploaded_at = yt_res["uploaded_at"]
         actual_privacy = yt_res.get("privacy_status", "public")
 
-    # 4. TikTok Dispatch
-    tiktok_caption = format_tiktok_caption(
-        title=chosen_title,
-        hook=chosen_script_res.hook,
-        hashtags=chosen_script_res.hashtags,
-    )
-    tiktok_status = "pending_credentials"
-    if not dry_run:
-        tiktok_res = post_to_tiktok(
-            video_path=final_output,
-            title=chosen_title,
-            description=tiktok_caption,
-            tags=chosen_script_res.tags,
-        )
-        tiktok_status = tiktok_res.get("status", "pending_credentials")
+    # 4. TikTok Dispatch: Format clean copy text
+    tags_list = chosen_script_res.hashtags or ["#Shorts", "#TimeReborn", "#Viral", "#FYP"]
+    tag_str = " ".join([t if t.startswith("#") else f"#{t}" for t in tags_list[:7]])
+    tiktok_status = "delivered_to_telegram"
 
-    # 5. Telegram Dispatch: Send TikTok MP4 file and Real Post Receipt
-    send_video(video_path=final_output, caption=f"{chosen_title}\n\n{tiktok_caption}", dry_run=dry_run)
+    # 5. Telegram Dispatch: Send TikTok MP4 file with title and hashtags
+    send_video(
+        video_path=final_output,
+        caption=f"TikTok Ready\n\nTitle: {chosen_title}\n\n{tag_str}"[:1024],
+        dry_run=dry_run,
+    )
 
     post_record = {
         "id": yt_id,
@@ -246,6 +239,7 @@ def cmd_post_slot(slot: str = "auto", dry_run: bool = False) -> Path:
         "platform": "YouTube",
         "title": chosen_title,
         "hook": chosen_script_res.hook,
+        "hashtags": chosen_script_res.hashtags,
         "reference_file": ref_file,
         "style_variant": style_variant,
         "topic_angle": topic_angle,

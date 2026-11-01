@@ -254,26 +254,16 @@ def repost_from_url(
             yt_url = yt_res["video_url"]
             actual_privacy = yt_res.get("privacy_status", "public")
 
-        # 5. TikTok Dispatch
-        tiktok_caption = format_tiktok_caption(
-            title=chosen_title,
-            hook=meta.get("hook", ""),
-            hashtags=meta.get("hashtags", ["#Shorts", "#TimeReborn"]),
-        )
-        tiktok_status = "pending_credentials"
-        if not dry_run:
-            tiktok_res = post_to_tiktok(
-                video_path=final_video,
-                title=chosen_title,
-                description=tiktok_caption,
-                tags=meta.get("tags", []),
-            )
-            tiktok_status = tiktok_res.get("status", "pending_credentials")
+        # 5. Format TikTok Caption
+        tags_list = meta.get("hashtags", ["#Shorts", "#TimeReborn", "#Viral", "#FYP"])
+        tag_str = " ".join([t if t.startswith("#") else f"#{t}" for t in tags_list[:7]])
+        tiktok_copy_text = f"{chosen_title}\n\n{meta.get('hook', '')}\n\n{tag_str}".strip()
+        tiktok_status = "delivered_to_telegram"
 
         # 6. Telegram Dispatch: Deliver ready-to-post MP4 and plain receipt
         send_video(
             video_path=final_video,
-            caption=f"{chosen_title}\n\n{tiktok_caption}",
+            caption=f"TikTok Ready\n\nTitle: {chosen_title}\n\n{tag_str}"[:1024],
             dry_run=dry_run,
         )
 
@@ -282,7 +272,9 @@ def repost_from_url(
             f"Title: {chosen_title}\n"
             f"Link: {yt_url}\n"
             f"Slot: {slot}\n"
-            f"Source: {dl_info.get('uploader', 'TikTok')} ({vid_id})"
+            f"Source: {dl_info.get('uploader', 'TikTok')} ({vid_id})\n\n"
+            "TikTok Caption (Copy & Paste):\n"
+            f"{tiktok_copy_text}"
         )
         send_message(receipt, dry_run=dry_run)
 
