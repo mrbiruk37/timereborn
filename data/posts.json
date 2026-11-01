@@ -113,5 +113,39 @@
     "tiktok_status": "delivered_to_telegram",
     "video_path": "output\\repost_The_Forgotten_Ancient_Trick.mp4",
     "duration_seconds": 25.0
+  },
+  {
+    "id": "gBOflwXO0eU",
+    "youtube_id": "gBOflwXO0eU",
+    "youtube_url": "https://youtu.be/gBOflwXO0eU",
+    "platform": "YouTube Shorts",
+    "title": "AI Reimagines a Tuesday in 1300 BC – Ancient Life Like You’ve Never Seen",
+    "hook": "What does a boring Tuesday look like 3,400 years ago when AI paints the past?",
+    "original_tiktok_id": "7693870110502604054",
+    "original_author": "sceneai09",
+    "original_url": "https://www.tiktok.com/@sceneai09/video/7693870110502604054?_r=1&_t=ZS-9B2vJiHMPll",
+    "slot": "telegram_trigger",
+    "privacy_status": "public",
+    "status": "published",
+    "tiktok_status": "delivered_to_telegram",
+    "video_path": "output\\repost_AI_Reimagines_a_Tuesday_in_130.mp4",
+    "duration_seconds": 16.0
+  },
+  {
+    "id": "dry_run_repost",
+    "youtube_id": "dry_run_repost",
+    "youtube_url": "https://youtu.be/dry_run_repost",
+    "platform": "YouTube Shorts",
+    "title": "The Forgotten Ancient Trick",
+    "hook": "This changed empires.",
+    "original_tiktok_id": "998877",
+    "original_author": "history_buff",
+    "original_url": "https://www.tiktok.com/@history_buff/video/998877",
+    "slot": "test_slot",
+    "privacy_status": "public",
+    "status": "published",
+    "tiktok_status": "delivered_to_telegram",
+    "video_path": "output\\repost_The_Forgotten_Ancient_Trick.mp4",
+    "duration_seconds": 25.0
   }
 ]

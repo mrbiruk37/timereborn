@@ -1,8 +1,4 @@
-"""Research module: Analyzes top performing videos from reference channels for inspiration.
-
-Hard Rule 1: Only titles, topics, hooks, stats, and transcripts are studied for concepts.
-Never download, copy, re-upload, or edit other creators' audio/footage/script text.
-"""
+"""Research module: Analyzes top performing videos from reference channels for inspiration."""
 
 import json
 import logging
@@ -21,19 +17,28 @@ load_dotenv()
 logger = logging.getLogger("timereborn.research")
 
 
-def fetch_channel_recent_videos(channel_id: str, max_results: int = 5) -> List[Dict[str, Any]]:
-    """Fetch top recent videos using YouTube Data API v3 uploads playlist (quota-efficient)."""
+def fetch_channel_recent_videos(channel_identifier: str, max_results: int = 5) -> List[Dict[str, Any]]:
+    """Fetch top recent videos using YouTube Data API v3 uploads playlist.
+    
+    Supports both channel handles (e.g. '@DailyStoic') and channel IDs (e.g. 'UC...').
+    """
     try:
         youtube = get_authenticated_service()
         # 1. Fetch channel's contentDetails to find uploads playlist ID (costs 1 unit)
-        ch_resp = youtube.channels().list(
-            part="contentDetails,statistics",
-            id=channel_id,
-        ).execute()
+        if channel_identifier.startswith("@"):
+            ch_resp = youtube.channels().list(
+                part="contentDetails,statistics",
+                forHandle=channel_identifier,
+            ).execute()
+        else:
+            ch_resp = youtube.channels().list(
+                part="contentDetails,statistics",
+                id=channel_identifier,
+            ).execute()
 
         items = ch_resp.get("items", [])
         if not items:
-            logger.warning(f"No channel found for ID: {channel_id}")
+            logger.info(f"No channel found for identifier: {channel_identifier}")
             return []
 
         uploads_playlist_id = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
@@ -240,9 +245,9 @@ def run_research() -> List[Dict[str, Any]]:
     # 1. YouTube reference channels
     all_researched_videos = []
     for ch in channels:
-        ch_id = ch.get("id")
-        if ch_id:
-            videos = fetch_channel_recent_videos(ch_id, max_results=3)
+        identifier = ch.get("handle") or ch.get("id")
+        if identifier:
+            videos = fetch_channel_recent_videos(identifier, max_results=3)
             all_researched_videos.extend(videos)
 
     yt_ideas = synthesize_ideas_from_research(all_researched_videos)

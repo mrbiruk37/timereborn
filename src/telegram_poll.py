@@ -129,7 +129,7 @@ def poll_telegram_events() -> int:
                     logger.info(f"Detected TikTok URL from Telegram: {tiktok_url}")
                     send_message("Processing TikTok video for repost...", chat_id=chat_id)
                     try:
-                        res = repost_from_url(tiktok_url, slot="telegram_trigger")
+                        res = repost_from_url(tiktok_url, slot="telegram_trigger", chat_id=chat_id)
                         if res.get("status") == "skipped":
                             send_message(f"Skipped: Video already reposted ({res.get('video_id')}).", chat_id=chat_id)
                     except Exception as e:
@@ -141,3 +141,17 @@ def poll_telegram_events() -> int:
         save_last_offset(max_update_id + 1)
 
     return handled_count
+
+
+def run_poll_loop(interval: int = 3) -> None:
+    """Continuously poll Telegram for instant real-time response."""
+    logger.info("Starting continuous Telegram poll loop (Ctrl+C to stop)...")
+    while True:
+        try:
+            poll_telegram_events()
+        except KeyboardInterrupt:
+            logger.info("Polling loop stopped by user.")
+            break
+        except Exception as e:
+            logger.error(f"Error in poll loop: {e}")
+        time.sleep(interval)

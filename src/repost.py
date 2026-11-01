@@ -202,6 +202,7 @@ def repost_from_url(
     tiktok_url: str,
     slot: str = "telegram_trigger",
     dry_run: bool = False,
+    chat_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Execute full repost pipeline: Download -> Sanitize -> Rewrite -> Upload to YouTube Shorts & TikTok -> Telegram receipt."""
     logger.info(f"=== Starting TikTok Repost for URL: {tiktok_url} (dry_run={dry_run}) ===")
@@ -210,15 +211,18 @@ def repost_from_url(
         tmp_dir = Path(tmp_dir_str)
 
         # 1. Download source video
+        send_message("Step 1/4: Downloading video from TikTok...", chat_id=chat_id, dry_run=dry_run)
         dl_info = download_tiktok_video(tiktok_url, tmp_dir)
         vid_id = dl_info["video_id"]
         source_vid = dl_info["video_path"]
 
         if is_already_reposted(vid_id):
             logger.info(f"Video ID {vid_id} was already reposted. Skipping to avoid duplicate upload.")
+            send_message(f"Skipped: Video ID {vid_id} has already been reposted.", chat_id=chat_id, dry_run=dry_run)
             return {"status": "skipped", "reason": "already_reposted", "video_id": vid_id}
 
         # 2. Generate completely fresh viral metadata
+        send_message("Step 2/4: Generating fresh viral title & hashtags with AI...", chat_id=chat_id, dry_run=dry_run)
         meta = generate_repost_metadata(
             original_title=dl_info["title"],
             original_description=dl_info["description"],
@@ -233,9 +237,11 @@ def repost_from_url(
         final_video = output_dir / f"repost_{safe_name}.mp4"
 
         # 3. Sanitize and re-encode with anti-duplicate filters
+        send_message("Step 3/4: Re-encoding video with anti-duplicate filters...", chat_id=chat_id, dry_run=dry_run)
         sanitize_and_reencode_video(source_vid, final_video)
 
         # 4. Upload to YouTube as a Public Short
+        send_message("Step 4/4: Uploading public video to YouTube Shorts...", chat_id=chat_id, dry_run=dry_run)
         if dry_run:
             yt_id = "dry_run_repost"
             yt_url = "https://youtu.be/dry_run_repost"
@@ -264,6 +270,7 @@ def repost_from_url(
         send_video(
             video_path=final_video,
             caption=f"TikTok Ready\n\nTitle: {chosen_title}\n\n{tag_str}"[:1024],
+            chat_id=chat_id,
             dry_run=dry_run,
         )
 
@@ -276,7 +283,7 @@ def repost_from_url(
             "TikTok Caption (Copy & Paste):\n"
             f"{tiktok_copy_text}"
         )
-        send_message(receipt, dry_run=dry_run)
+        send_message(receipt, chat_id=chat_id, dry_run=dry_run)
 
         # 7. Record post in posts.json and reposts.json
         post_record = {

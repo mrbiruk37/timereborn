@@ -436,10 +436,14 @@ def cmd_make_long(
         return final_output
 
 
-def cmd_poll_telegram():
+def cmd_poll_telegram(loop: bool = False):
     """Poll Telegram for user commands."""
-    handled = poll_telegram_events()
-    logger.info(f"Processed {handled} telegram updates.")
+    if loop:
+        from src.telegram_poll import run_poll_loop
+        run_poll_loop()
+    else:
+        handled = poll_telegram_events()
+        logger.info(f"Processed {handled} telegram updates.")
 
 
 def cmd_comments():
@@ -502,7 +506,8 @@ def main():
     subparsers.add_parser("comments", help="Process and reply to comments")
 
     # poll-telegram
-    subparsers.add_parser("poll-telegram", help="Poll Telegram for commands")
+    p_poll = subparsers.add_parser("poll-telegram", help="Poll Telegram for commands")
+    p_poll.add_argument("--loop", action="store_true", help="Continuously poll in a loop")
 
     args = parser.parse_args()
     is_dry = args.dry_run or getattr(args, "dry_run", False)
@@ -534,7 +539,7 @@ def main():
     elif args.command == "comments":
         cmd_comments()
     elif args.command == "poll-telegram":
-        cmd_poll_telegram()
+        cmd_poll_telegram(loop=args.loop)
 
 
 if __name__ == "__main__":
