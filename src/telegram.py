@@ -192,7 +192,7 @@ def get_updates(offset: Optional[int] = None, timeout: int = 10) -> List[Dict[st
         params["offset"] = offset
 
     try:
-        resp = requests.get(url, params=params, timeout=timeout + 5)
+        resp = requests.get(url, params=params, timeout=timeout + 20)
         if resp.status_code == 200:
             data = resp.json()
             return data.get("result", [])

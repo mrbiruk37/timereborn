@@ -147,5 +147,22 @@
     "tiktok_status": "delivered_to_telegram",
     "video_path": "output\\repost_The_Forgotten_Ancient_Trick.mp4",
     "duration_seconds": 25.0
+  },
+  {
+    "id": "U8Ytmq4cOUc",
+    "youtube_id": "U8Ytmq4cOUc",
+    "youtube_url": "https://youtu.be/U8Ytmq4cOUc",
+    "platform": "YouTube Shorts",
+    "title": "Frozen Beats: Inside the Secret Society That Beats Time",
+    "hook": "What happens when a hidden club freezes time itself?",
+    "original_tiktok_id": "7697940720983772430",
+    "original_author": "zartofrd",
+    "original_url": "https://www.tiktok.com/@zartofrd/video/7697940720983772430?_r=1&_t=ZS-9B32X6K2ADN",
+    "slot": "telegram_trigger",
+    "privacy_status": "public",
+    "status": "published",
+    "tiktok_status": "delivered_to_telegram",
+    "video_path": "output\\repost_Frozen_Beats__Inside_the_Secre.mp4",
+    "duration_seconds": 15.0
   }
 ]
