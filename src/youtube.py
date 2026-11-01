@@ -71,8 +71,17 @@ def upload_video(
     if ai_disclosure not in description:
         description = f"{description.strip()}\n\n---\n{ai_disclosure}"
 
-    # YouTube limits title to 100 chars
-    clean_title = title[:100].strip()
+    # YouTube limits title to 100 chars; ensure #Shorts is present for Shorts categorization
+    clean_title = title.strip()
+    if "#Shorts" not in clean_title and "#shorts" not in clean_title:
+        if len(clean_title) <= 92:
+            clean_title = f"{clean_title} #Shorts"
+        else:
+            clean_title = f"{clean_title[:91].strip()} #Shorts"
+    clean_title = clean_title[:100].strip()
+
+    if "#Shorts" not in description and "#shorts" not in description:
+        description = f"{description.strip()}\n\n#Shorts #TimeReborn"
 
     body = {
         "snippet": {

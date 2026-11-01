@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 import yaml
 
 from src.ideas import add_user_idea
+from src.repost import extract_tiktok_url, repost_from_url
 from src.state import (
     SETTINGS_FILE,
     get_stats,
@@ -117,10 +118,24 @@ def poll_telegram_events() -> int:
         chat_id = str(msg.get("chat", {}).get("id"))
         text = msg.get("text", "")
 
-        # Process commands only from authenticated owner chat
-        if chat_id == owner_chat_id and text.startswith("/"):
-            handle_command(text, chat_id)
-            handled_count += 1
+        # Process messages from authenticated owner chat
+        if chat_id == owner_chat_id:
+            if text.startswith("/"):
+                handle_command(text, chat_id)
+                handled_count += 1
+            else:
+                tiktok_url = extract_tiktok_url(text)
+                if tiktok_url:
+                    logger.info(f"Detected TikTok URL from Telegram: {tiktok_url}")
+                    send_message("Processing TikTok video for repost...", chat_id=chat_id)
+                    try:
+                        res = repost_from_url(tiktok_url, slot="telegram_trigger")
+                        if res.get("status") == "skipped":
+                            send_message(f"Skipped: Video already reposted ({res.get('video_id')}).", chat_id=chat_id)
+                    except Exception as e:
+                        logger.exception("Failed to process TikTok repost from Telegram link")
+                        send_message(f"Error processing video: {str(e)[:150]}", chat_id=chat_id)
+                    handled_count += 1
 
     if max_update_id:
         save_last_offset(max_update_id + 1)

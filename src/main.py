@@ -461,6 +461,13 @@ def cmd_analytics(dry_run: bool = False):
     send_daily_summary(dry_run=dry_run)
 
 
+def cmd_repost(url: str, slot: str = "manual", dry_run: bool = False):
+    """Execute TikTok repost pipeline."""
+    from src.repost import repost_from_url
+    res = repost_from_url(tiktok_url=url, slot=slot, dry_run=dry_run)
+    logger.info(f"Repost completed with result: {res.get('status', 'success')}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Timereborn autonomous content agent CLI")
     parser.add_argument("--dry-run", action="store_true", help="Print messages to console instead of sending to Telegram/YouTube")
@@ -486,6 +493,12 @@ def main():
     p_slot = subparsers.add_parser("post-slot", help="Execute scheduled posting slot")
     p_slot.add_argument("--slot", default="slot_1", help="Slot ID from settings.yml")
     p_slot.add_argument("--dry-run", action="store_true", help="Dry run mode")
+
+    # repost
+    p_repost = subparsers.add_parser("repost", help="Repost a TikTok video with fresh metadata to YouTube Shorts & TikTok")
+    p_repost.add_argument("--url", required=True, help="TikTok video URL to repost")
+    p_repost.add_argument("--slot", default="manual", help="Posting slot label")
+    p_repost.add_argument("--dry-run", action="store_true", help="Dry run mode")
 
     # analytics
     p_analytics = subparsers.add_parser("analytics", help="Collect metrics and run learning loop")
@@ -520,6 +533,8 @@ def main():
         )
     elif args.command == "post-slot":
         cmd_post_slot(slot=args.slot, dry_run=is_dry)
+    elif args.command == "repost":
+        cmd_repost(url=args.url, slot=args.slot, dry_run=is_dry)
     elif args.command == "analytics":
         cmd_analytics(dry_run=is_dry)
     elif args.command == "comments":
