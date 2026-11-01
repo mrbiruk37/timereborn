@@ -69,9 +69,12 @@ def fetch_channel_recent_videos(channel_identifier: str, max_results: int = 5) -
             # Optional transcript extraction (guarded in try/except)
             transcript_text = None
             try:
-                from youtube_transcript_api import YouTubeTranscriptApi
-                t_list = YouTubeTranscriptApi.get_transcript(video_id)
-                transcript_text = " ".join(t["text"] for t in t_list[:15])  # First ~45s of transcript
+                import importlib
+                yta_mod = importlib.import_module("youtube_transcript_api")
+                yta = getattr(yta_mod, "YouTubeTranscriptApi", None)
+                if yta:
+                    t_list = yta.get_transcript(video_id)
+                    transcript_text = " ".join(t["text"] for t in t_list[:15])  # First ~45s of transcript
             except Exception:
                 pass
 
